@@ -1,0 +1,56 @@
+.titlebar {
+  height: 32px;
+  background: #080b12;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1e293b;
+  flex-shrink: 0;
+  z-index: 9999;
+}
+
+.titlebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 10px;
+  color: #64748b;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.titlebar-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.titlebar-controls {
+  display: flex;
+  height: 100%;
+}
+
+.titlebar-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 46px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.titlebar-button:hover {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+.titlebar-button.close:hover {
+  background: #ef4444;
+  color: white;
+}

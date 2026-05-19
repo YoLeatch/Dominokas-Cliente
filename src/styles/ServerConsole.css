@@ -1,0 +1,87 @@
+/* ── SERVER CONSOLE ── */
+.console-screen {
+  padding: 20px !important;
+  gap: 14px;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  padding-top: 20px !important; /* Console doesn't use the absolute logo */
+}
+
+.console-header { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.header-left { display: flex; align-items: center; gap: 12px; }
+.back-btn-console {
+  background: transparent; border: 1px solid var(--border-base); border-radius: 4px;
+  color: var(--text-dim); font-family: 'Geist Mono', monospace; font-size: 9px; font-weight: 700;
+  padding: 4px 10px; cursor: pointer; transition: all 0.2s;
+}
+.back-btn-console:hover { border-color: var(--color-gold); color: var(--color-gold); background: rgba(240, 185, 11, 0.05); }
+.header-title-console { color: var(--text-primary); font-size: 14px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+.header-title-console span { color: var(--color-gold); }
+
+.server-status { display: flex; align-items: center; gap: 6px; background-color: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); border-radius: 12px; padding: 4px 12px; }
+.server-dot { width: 6px; height: 6px; border-radius: 50%; background-color: var(--text-dim); }
+.server-dot.active { background-color: var(--color-green); box-shadow: 0 0 6px rgba(34, 197, 94, 0.5); }
+.server-status-text { color: var(--text-muted); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+
+/* ── QUICK ACTIONS ── */
+.quick-actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+
+.action-btn {
+  background-color: var(--bg-input); border: 1.5px solid var(--border-input); border-radius: 6px;
+  color: var(--text-muted); font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.5px; padding: 6px 14px; cursor: pointer; transition: all 0.2s ease;
+  text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+}
+.action-btn:hover { border-color: var(--border-hover); color: var(--text-secondary); background-color: #1e2d45; }
+.action-btn.warn { border-color: rgba(245, 158, 11, 0.3); color: var(--color-yellow); }
+.action-btn.warn:hover { background-color: rgba(245, 158, 11, 0.08); border-color: var(--color-yellow); }
+.action-btn.danger { border-color: rgba(239, 68, 68, 0.3); color: var(--color-red); }
+.action-btn.danger:hover { background-color: rgba(239, 68, 68, 0.08); border-color: var(--color-red); }
+.action-btn.success { border-color: rgba(34, 197, 94, 0.3); color: var(--color-green); }
+.action-btn.success:hover { background-color: rgba(34, 197, 94, 0.08); border-color: var(--color-green); }
+.action-btn.primary { border-color: rgba(59, 130, 246, 0.3); color: var(--color-blue); }
+.action-btn.primary:hover { background-color: rgba(59, 130, 246, 0.08); border-color: var(--color-blue); }
+
+.btn-divider { width: 1px; height: 24px; background-color: var(--border-base); align-self: center; }
+
+/* ── TERMINAL ── */
+.terminal-container { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-deep); border: 1px solid var(--border-base); border-radius: 8px; overflow: hidden; min-height: 0; }
+.terminal-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-base); flex-shrink: 0; }
+.terminal-tab { display: flex; align-items: center; gap: 6px; }
+.tab-dot { width: 8px; height: 8px; border-radius: 2px; }
+.tab-dot.red { background-color: var(--color-red); }
+.tab-dot.yellow { background-color: var(--color-yellow); }
+.tab-dot.green { background-color: var(--color-green); }
+.terminal-title { color: var(--text-dim); font-size: 10px; font-weight: 600; letter-spacing: 0.5px; margin-left: 8px; }
+.terminal-actions { display: flex; gap: 6px; }
+.term-btn { background-color: var(--bg-input); border: 1px solid var(--border-input); border-radius: 4px; color: var(--text-dim); font-family: 'Geist Mono', monospace; font-size: 9px; font-weight: 600; padding: 3px 8px; cursor: pointer; transition: all 0.2s ease; }
+.term-btn:hover { color: var(--text-muted); border-color: var(--border-hover); }
+
+.terminal-output { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 2px; min-height: 0; }
+.terminal-output::-webkit-scrollbar { width: 6px; }
+.terminal-output::-webkit-scrollbar-track { background-color: var(--bg-deep); }
+.terminal-output::-webkit-scrollbar-thumb { background-color: var(--border-input); border-radius: 3px; }
+
+.log-line { font-size: 11px; font-weight: 500; letter-spacing: 0.2px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+.log-line .timestamp { color: var(--text-faint); }
+.log-line.info { color: var(--text-muted); }
+.log-line.success { color: var(--color-green); }
+.log-line.warn { color: var(--color-yellow); }
+.log-line.error { color: var(--color-red); }
+.log-line.system { color: var(--color-blue); }
+.log-line.cmd { color: var(--color-gold); }
+
+/* ── INPUT CMD ── */
+.cmd-input-bar { display: flex; align-items: center; gap: 0; border-top: 1px solid var(--border-base); flex-shrink: 0; }
+.cmd-prompt { color: var(--color-gold); font-size: 12px; font-weight: 700; padding: 10px 8px 10px 12px; flex-shrink: 0; user-select: none; }
+.cmd-input { flex: 1; background-color: transparent; border: none; outline: none; color: var(--text-secondary); font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 600; padding: 10px 0; letter-spacing: 0.3px; }
+.cmd-input::placeholder { color: var(--border-input); }
+.cmd-send { background-color: var(--color-gold); border: none; color: #000; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 800; letter-spacing: 1px; padding: 10px 16px; cursor: pointer; transition: background-color 0.2s ease; }
+.cmd-send:hover { background-color: #d4a50a; }
+
+/* ── INFO BAR ── */
+.info-bar { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.info-item { display: flex; align-items: center; gap: 6px; }
+.info-label-bar { color: var(--text-faint); font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+.info-value-bar { color: var(--text-muted); font-size: 10px; font-weight: 700; }
+.info-value-bar.highlight { color: var(--color-gold); }

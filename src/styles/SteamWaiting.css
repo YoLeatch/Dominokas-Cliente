@@ -1,0 +1,24 @@
+.steam-waiting-screen {
+  gap: 48px;
+  justify-content: center !important;
+  align-items: center !important;
+  padding-top: 0 !important;
+}
+
+.steam-waiting-screen .logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.steam-waiting-screen .logo-wrap svg {
+  width: 250px;
+}
+
+.steam-waiting-screen .match-label {
+  color: var(--text-primary);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  animation: pulse 2s ease-in-out infinite;
+}

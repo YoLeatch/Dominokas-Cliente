@@ -1,0 +1,163 @@
+/* ── CARD DE CONFIGURAÇÃO ── */
+.config-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  border-radius: 12px;
+  padding: 2vh 3vw;
+  width: 95%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+}
+
+.config-title {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+  padding-bottom: 1vh;
+  border-bottom: 1px solid var(--border-base);
+}
+
+.config-title span { color: var(--color-gold); }
+
+.config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2vh 3vw;
+}
+
+.config-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.config-row.full { grid-column: 1 / -1; }
+
+.config-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.option-group { display: flex; gap: 6px; }
+
+.option-btn {
+  background-color: var(--bg-input);
+  border: 1.5px solid var(--border-input);
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.option-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--text-muted);
+  background-color: #1e2d45;
+}
+
+.option-btn.active {
+  background-color: var(--color-gold);
+  border-color: var(--color-gold);
+  color: #000;
+  box-shadow: 0 0 12px rgba(240, 185, 11, 0.25);
+}
+
+/* ── SELECT MAPA ── */
+.map-select {
+  background-color: var(--bg-input);
+  border: 1.5px solid var(--border-input);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.25s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.map-select:focus {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 12px rgba(240, 185, 11, 0.15);
+}
+
+/* ── BOTÃO CRIAR ── */
+.btn-create {
+  position: relative;
+  background-color: transparent;
+  border: none;
+  padding: 1.2vh 3.5vw;
+  cursor: pointer;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  z-index: 1;
+  margin-top: 1vh;
+  align-self: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-create::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: var(--color-gold);
+  border-radius: 25px 0 25px 0;
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-create:hover::after { transform: scale(1.05); }
+.btn-create:active::after { transform: scale(0.95); }
+.btn-create span { position: relative; z-index: 3; color: #000; }
+
+/* ── STATUS TÚNEL ── */
+.tunnel-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 1.5vh;
+  border-top: 1px solid var(--border-base);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-faint);
+}
+
+.status-dot.active {
+  background-color: var(--color-green);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+.status-text {
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}

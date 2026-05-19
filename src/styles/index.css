@@ -1,0 +1,135 @@
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/GeistMono-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Cores base ── */
+  --bg-primary: #0d121c;
+  --bg-card: #111827;
+  --bg-input: #1a2235;
+  --bg-deep: #0a0e1a;
+
+  /* ── Bordas ── */
+  --border-base: #1e293b;
+  --border-input: #2a3550;
+  --border-hover: #475569;
+
+  /* ── Texto ── */
+  --text-primary: #ffffff;
+  --text-secondary: #c8d0dc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --text-faint: #475569;
+
+  /* ── Cores de destaque ── */
+  --color-gold: #f0b90b;
+  --color-gold-dark: #a37a00;
+  --color-gold-hover: #e8a020;
+  --color-amber: #e8a020;
+  --color-sapphire: #3a8fd4;
+  --color-green: #22c55e;
+  --color-green-dark: #15803d;
+  --color-red: #ef4444;
+  --color-red-dark: #991b1b;
+  --color-blue: #3b82f6;
+  --color-yellow: #f59e0b;
+  --color-ban-red: #cc1a1a;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Geist Mono', monospace;
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Classes utilitárias globais ── */
+.screen {
+  background-color: var(--bg-primary);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding-top: 40px;
+  /* Space for the absolute logo */
+}
+
+.header-logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.header-logo svg {
+  width: 20%;
+  max-width: 90px;
+  min-width: 90px;
+  height: auto;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--border-base);
+}
+
+/* ── Animações globais ── */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

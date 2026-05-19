@@ -1,0 +1,458 @@
+/* ── MATCH IN PROGRESS - NEW PREMIUM DESIGN ── */
+
+.match-in-progress-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  padding: 3vh 2vw;
+  box-sizing: border-box;
+  overflow: hidden;
+  gap: 2vh;
+  background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+}
+
+.match-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  gap: 24px;
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 0; /* Permite scroll interno */
+}
+
+/* Colunas de Times */
+.match-team-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.match-team-column::-webkit-scrollbar {
+  width: 4px;
+}
+
+.match-team-column::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.match-team-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.match-team-title.amber {
+  color: var(--color-amber);
+  border-left: 3px solid var(--color-amber);
+  box-shadow: inset 5px 0 10px rgba(232, 160, 32, 0.05);
+}
+
+.match-team-title.sapphire {
+  color: var(--color-sapphire);
+  border-left: 3px solid var(--color-sapphire);
+  box-shadow: inset 5px 0 10px rgba(58, 143, 212, 0.05);
+}
+
+/* Cards de Heróis */
+.match-hero-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(30, 41, 59, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.25s ease;
+}
+
+.match-hero-card.amber:hover {
+  border-color: rgba(232, 160, 32, 0.3);
+  box-shadow: 0 0 12px rgba(232, 160, 32, 0.1);
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.match-hero-card.sapphire:hover {
+  border-color: rgba(58, 143, 212, 0.3);
+  box-shadow: 0 0 12px rgba(58, 143, 212, 0.1);
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.match-hero-card.is-me {
+  background: rgba(240, 185, 11, 0.05);
+  border-color: rgba(240, 185, 11, 0.3);
+  box-shadow: 0 0 15px rgba(240, 185, 11, 0.1);
+}
+
+.match-card-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  background: #1e293b;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.match-card-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.match-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.match-card-player {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.match-card-hero {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Coluna Central */
+.match-center-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+/* Card Principal de Conexão */
+.match-status-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.match-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  animation: blink 2.5s infinite;
+}
+
+.match-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-green);
+  box-shadow: 0 0 8px var(--color-green);
+}
+
+.match-badge-text {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--color-green);
+}
+
+.btn-connect-match {
+  width: 100%;
+  max-width: 320px;
+  background: linear-gradient(135deg, var(--color-gold) 0%, #d97706 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  cursor: pointer;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #000;
+  box-shadow: 0 4px 15px rgba(240, 185, 11, 0.2);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-connect-match:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(240, 185, 11, 0.35);
+  filter: brightness(1.1);
+}
+
+.btn-connect-match:active {
+  transform: translateY(0);
+}
+
+.auto-connect-hint {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: center;
+  max-width: 440px;
+  line-height: 1.5;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 12px;
+}
+
+.auto-connect-hint strong {
+  color: var(--color-gold);
+}
+
+/* Comando de Cópia */
+.copy-address-group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-input);
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.copy-address-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--color-gold);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 8px 12px;
+  outline: none;
+  text-overflow: ellipsis;
+}
+
+.btn-copy-address {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 10px;
+  font-family: 'Geist Mono', monospace;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copy-address:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Painel de Abas do Host */
+.host-control-box {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.host-tabs {
+  display: flex;
+  background: rgba(15, 23, 42, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.host-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.host-tab-btn:hover {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.host-tab-btn.active {
+  color: var(--color-gold);
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid var(--color-gold);
+}
+
+.host-tab-content {
+  flex: 1;
+  padding: 16px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Conteúdo da Aba Controles */
+.host-control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.host-button-row {
+  display: flex;
+  gap: 12px;
+}
+
+.host-btn-action {
+  flex: 1;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+  border-radius: 6px;
+  padding: 10px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.host-btn-action:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #60a5fa;
+}
+
+.host-btn-danger {
+  width: 100%;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  border-radius: 6px;
+  padding: 12px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.host-btn-danger:hover {
+  background: var(--color-red-dark);
+  color: #fff;
+  border-color: var(--color-red);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+/* Chat Input Row */
+.host-chat-row {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-input);
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.host-chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  padding: 8px 12px;
+  outline: none;
+}
+
+.host-chat-input::placeholder {
+  color: var(--text-dim);
+}
+
+.btn-host-send {
+  background: var(--color-blue);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-host-send:hover {
+  background: #2563eb;
+}
+
+/* Conteúdo da Aba Console Logs */
+.host-console-panel {
+  flex: 1;
+  background: #020617;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: 'Consolas', 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #38bdf8;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+
+.console-log-line {
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.console-log-line.system {
+  color: var(--color-gold);
+}
+
+.console-log-line.cmd {
+  color: #e2e8f0;
+  font-weight: 700;
+}
+
+.console-log-line.error {
+  color: var(--color-red);
+}
+
+.console-log-line.success {
+  color: var(--color-green);
+}

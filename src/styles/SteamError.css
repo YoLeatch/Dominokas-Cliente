@@ -1,0 +1,133 @@
+/* ── CARD DE ERRO ── */
+.error-card {
+  background-color: var(--bg-card);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 3vh 3vw;
+  width: 90%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+}
+
+.error-icon { font-size: 48px; line-height: 1; }
+
+.error-title {
+  color: var(--color-red);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.error-message {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.error-detail {
+  background-color: var(--bg-deep);
+  border: 1px solid var(--border-base);
+  border-radius: 6px;
+  padding: 10px 16px;
+  width: 100%;
+}
+
+.error-detail-text {
+  color: var(--color-red);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  word-break: break-all;
+}
+
+.help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.help-title {
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.help-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.step-number {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ── BOTÃO TENTAR NOVAMENTE ── */
+.btn-retry {
+  position: relative;
+  background-color: transparent;
+  border: none;
+  padding: 1.2vh 3.5vw;
+  cursor: pointer;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  z-index: 1;
+  margin-top: 1vh;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-retry::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: var(--color-red);
+  border-radius: 25px 0 25px 0;
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-retry::before {
+  content: "";
+  position: absolute;
+  top: 4px; left: -5px;
+  width: 100%; height: 100%;
+  background-color: var(--color-red-dark);
+  border-radius: 25px 0 25px 0;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.btn-retry:hover::after { transform: translate(-5px, 5px); z-index: 1; }
+.btn-retry:hover::before { transform: translate(8px, -8px); z-index: 2; box-shadow: 0 0 18px rgba(239, 68, 68, 0.5); }
+.btn-retry:active::after, .btn-retry:active::before { transform: translate(0, 0); }
+.btn-retry span { position: relative; z-index: 3; color: #fff; }
