@@ -1,0 +1,21 @@
+TERMOS DE USO E LICENÇA - DOMINOKAS LAUNCHER
+
+Ao instalar o Dominokas Launcher, você concorda com os seguintes termos e condições:
+
+1. DESCRIÇÃO DO SERVIÇO
+O Dominokas é um launcher de jogo e gerenciador de partidas para Deadlock (Citadel). Ele facilita a organização de lobbies, seleção de heróis (Draft/Ban), gerenciamento de conexões de rede seguras via túnel Playit e sincronização com servidores dedicados.
+
+2. SEGURANÇA E CONEXÃO
+Para possibilitar partidas cooperativas e competitivas sem necessidade de configurações manuais de roteadores, o Dominokas utiliza um túnel seguro de rede (Playit). Ao utilizar este software, você concede autorização para iniciar o túnel para conexões seguras durante as sessões de partida ativa.
+
+3. INTEGRAÇÃO COM STEAM E JOGO
+O launcher detecta sua conta Steam local para fins de autenticação e atribuição correta de heróis durante o draft. O Dominokas não coleta, armazena ou compartilha quaisquer credenciais pessoais. Toda a comunicação de autenticação ocorre de forma nativa e segura através das APIs oficiais do Steamworks.
+
+4. REQUISITOS DO SISTEMA
+O uso correto das funcionalidades de draft em jogo exige o patch automático ou aplicação de scripts recomendados no diretório do Deadlock. O usuário concorda com a aplicação dessas otimizações necessárias para sincronização da partida.
+
+5. USO ACEITÁVEL
+O Dominokas foi projetado para uso comunitário e competitivo justo. Modificações maliciosas no código do cliente ou tentativas de trapacear na comunicação WebSocket dos drafts são estritamente proibidas e sujeitas a banimento permanente em servidores organizados sob o ecossistema Dominokas.
+
+Aproveite o jogo e bom draft!
+Equipe Dominokas

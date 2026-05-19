@@ -46,7 +46,15 @@
     "resources": [
       "steam_api64.dll",
       "bin/playit.exe"
-    ]
+    ],
+    "nsis": {
+      "displayLanguageSelector": false,
+      "installMode": "currentUser",
+      "headerImage": "installer/header.png",
+      "sidebarImage": "installer/sidebar.png",
+      "license": "installer/licenca.txt",
+      "languages": ["Portuguese"]
+    }
   },
   "plugins": {
     "updater": {
