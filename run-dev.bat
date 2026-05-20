@@ -1,3 +1,0 @@
-npx tauri dev
-
-pause
