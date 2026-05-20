@@ -16,6 +16,9 @@ static GAME_DIR_OVERRIDE: Mutex<Option<PathBuf>> = Mutex::new(None);
 static SERVER_STDIN: Mutex<Option<ChildStdin>> = Mutex::new(None);
 static SERVER_PROCESS: Mutex<Option<std::process::Child>> = Mutex::new(None);
 
+#[cfg(windows)]
+static ACTIVE_JOB: Mutex<Option<win_job::JobObject>> = Mutex::new(None);
+
 pub(crate) fn set_game_dir_override(path: Option<PathBuf>) {
     *GAME_DIR_OVERRIDE.lock().unwrap() = path;
 }
@@ -27,14 +30,22 @@ pub(crate) fn get_game_dir_override() -> Option<PathBuf> {
 /// Find Steam install path from the Windows registry.
 #[cfg(windows)]
 fn find_steam_path() -> Result<PathBuf, String> {
-    use winreg::enums::HKEY_LOCAL_MACHINE;
+    use winreg::enums::{HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER};
     use winreg::RegKey;
 
     let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
-    let steam_key = hklm
-        .open_subkey("SOFTWARE\\WOW6432Node\\Valve\\Steam")
-        .map_err(|e| format!("Failed to open Steam registry key: {}", e))?;
-    let install_path: String = steam_key
+    if let Ok(steam_key) = hklm.open_subkey("SOFTWARE\\WOW6432Node\\Valve\\Steam") {
+        if let Ok(install_path) = steam_key.get_value::<String, _>("InstallPath") {
+            return Ok(PathBuf::from(install_path));
+        }
+    }
+
+    // Fallback search in HKEY_CURRENT_USER
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let steam_key_hkcu = hkcu
+        .open_subkey("Software\\Valve\\Steam")
+        .map_err(|e| format!("Failed to open Steam registry key in HKLM and HKCU: {}", e))?;
+    let install_path: String = steam_key_hkcu
         .get_value("InstallPath")
         .map_err(|e| format!("Failed to read Steam InstallPath: {}", e))?;
     Ok(PathBuf::from(install_path))
@@ -214,7 +225,7 @@ pub fn get_game_dir() -> Result<String, String> {
 
 /// Set a manual override for the game directory.
 #[tauri::command]
-pub fn set_game_dir(path: String) -> Result<(), String> {
+pub fn set_game_dir(app: AppHandle, path: String) -> Result<(), String> {
     let p = PathBuf::from(&path);
     let citadel = p.join("citadel");
     if !citadel.exists() {
@@ -224,17 +235,31 @@ pub fn set_game_dir(path: String) -> Result<(), String> {
         ));
     }
     set_game_dir_override(Some(p));
+
+    if let Ok(store) = tauri_plugin_store::StoreBuilder::new(&app, "settings.json").build() {
+        store.set("game_dir_override", serde_json::Value::String(path));
+        let _ = store.save();
+    }
     Ok(())
 }
 
 /// Clear the manual override, reverting to auto-detection.
 #[tauri::command]
-pub fn reset_game_dir() {
+pub fn reset_game_dir(app: AppHandle) -> Result<(), String> {
     set_game_dir_override(None);
+    if let Ok(store) = tauri_plugin_store::StoreBuilder::new(&app, "settings.json").build() {
+        store.delete("game_dir_override");
+        let _ = store.save();
+    }
+    Ok(())
 }
 
 #[tauri::command]
 pub fn send_server_command(command: String) -> Result<(), String> {
+    if command.chars().any(|c| matches!(c, '&' | '|' | '>' | '<' | ';')) {
+        return Err("Comando inválido: contém caracteres de controle não permitidos.".into());
+    }
+
     let mut lock = SERVER_STDIN.lock().unwrap();
     if let Some(stdin) = lock.as_mut() {
         writeln!(stdin, "{}", command).map_err(|e| format!("Falha ao enviar comando: {}", e))?;
@@ -252,6 +277,10 @@ pub fn stop_deadlock_server() -> Result<(), String> {
         let _ = child.kill();
         // Limpa também o stdin
         *SERVER_STDIN.lock().unwrap() = None;
+        #[cfg(windows)]
+        {
+            *ACTIVE_JOB.lock().unwrap() = None;
+        }
         println!("[Connect] Servidor de jogo encerrado.");
         Ok(())
     } else {
@@ -261,6 +290,33 @@ pub fn stop_deadlock_server() -> Result<(), String> {
 
 #[tauri::command]
 pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
+    // Prevenção de Reentrância: verificar se SERVER_PROCESS já possui um processo ativo
+    {
+        let mut proc_lock = SERVER_PROCESS.lock().unwrap();
+        if proc_lock.is_some() {
+            let is_alive = if let Some(child) = proc_lock.as_mut() {
+                match child.try_wait() {
+                    Ok(None) => true, // Processo ainda rodando
+                    _ => false, // Processo terminou ou deu erro
+                }
+            } else {
+                false
+            };
+
+            if is_alive {
+                return Err("Servidor já está rodando.".into());
+            } else {
+                // Se já terminou, limpamos para poder iniciar outro
+                *proc_lock = None;
+                *SERVER_STDIN.lock().unwrap() = None;
+                #[cfg(windows)]
+                {
+                    *ACTIVE_JOB.lock().unwrap() = None;
+                }
+            }
+        }
+    }
+
     let deadlock_sv_dir = PathBuf::from("C:\\DeadlockSV");
     if !deadlock_sv_dir.exists() {
         return Err("A pasta C:\\DeadlockSV não foi encontrada.".into());
@@ -290,6 +346,15 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
     let mut child = child_cmd.spawn()
         .map_err(|e| format!("Falha ao iniciar servidor Deadworks: {}", e))?;
 
+    #[cfg(windows)]
+    let job = {
+        use std::os::windows::io::AsRawHandle;
+        let job = win_job::JobObject::new().map_err(|e| format!("Falha ao criar Job Object: {}", e))?;
+        job.assign_process(child.as_raw_handle())
+            .map_err(|e| format!("Falha ao associar processo ao Job Object: {}", e))?;
+        job
+    };
+
     let stdout = child.stdout.take().ok_or("Sem stdout")?;
     let stderr = child.stderr.take().ok_or("Sem stderr")?;
     let stdin = child.stdin.take().ok_or("Sem stdin")?;
@@ -297,16 +362,25 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
     // Salva o stdin e o Child para uso futuro
     *SERVER_STDIN.lock().unwrap() = Some(stdin);
     *SERVER_PROCESS.lock().unwrap() = Some(child);
+    #[cfg(windows)]
+    {
+        *ACTIVE_JOB.lock().unwrap() = Some(job);
+    }
 
     let app_clone1 = app.clone();
     thread::spawn(move || {
         let reader = BufReader::new(stdout);
         for line in reader.lines() {
-            if let Ok(line_str) = line {
-                // Filtra spam recorrente do motor Source 2 quando rodando sem janela de console
-                if !line_str.contains("CTextConsoleWin::GetLine") && !line_str.contains("!GetNumberOfConsoleInputEvents") {
-                    let _ = app_clone1.emit("deadlock-server-log", line_str);
+            match line {
+                Ok(line_str) => {
+                    // Filtra spam recorrente do motor Source 2 quando rodando sem janela de console
+                    if !line_str.contains("CTextConsoleWin::GetLine") && !line_str.contains("!GetNumberOfConsoleInputEvents") {
+                        if app_clone1.emit("deadlock-server-log", line_str).is_err() {
+                            break;
+                        }
+                    }
                 }
+                Err(_) => break,
             }
         }
     });
@@ -315,15 +389,133 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
     thread::spawn(move || {
         let reader = BufReader::new(stderr);
         for line in reader.lines() {
-            if let Ok(line_str) = line {
-                // Filtra spam recorrente do motor Source 2 também no stderr
-                if !line_str.contains("CTextConsoleWin::GetLine") && !line_str.contains("!GetNumberOfConsoleInputEvents") {
-                    let _ = app_clone2.emit("deadlock-server-log", format!("ERROR: {}", line_str));
+            match line {
+                Ok(line_str) => {
+                    // Filtra spam recorrente do motor Source 2 também no stderr
+                    if !line_str.contains("CTextConsoleWin::GetLine") && !line_str.contains("!GetNumberOfConsoleInputEvents") {
+                        if app_clone2.emit("deadlock-server-log", format!("ERROR: {}", line_str)).is_err() {
+                            break;
+                        }
+                    }
                 }
+                Err(_) => break,
             }
         }
     });
 
     Ok(())
+}
+
+#[cfg(windows)]
+#[allow(non_snake_case)]
+mod win_job {
+    use std::os::raw::c_void;
+    use std::os::windows::io::RawHandle;
+
+    type HANDLE = *mut c_void;
+    type BOOL = i32;
+    type DWORD = u32;
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct IO_COUNTERS {
+        pub ReadOperationCount: u64,
+        pub WriteOperationCount: u64,
+        pub OtherOperationCount: u64,
+        pub ReadTransferCount: u64,
+        pub WriteTransferCount: u64,
+        pub OtherTransferCount: u64,
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct JOBOBJECT_BASIC_LIMIT_INFORMATION {
+        pub PerProcessUserTimeLimit: i64,
+        pub PerJobUserTimeLimit: i64,
+        pub LimitFlags: DWORD,
+        pub MinimumWorkingSetSize: usize,
+        pub MaximumWorkingSetSize: usize,
+        pub ActiveProcessLimit: DWORD,
+        pub Affinity: usize,
+        pub PriorityClass: DWORD,
+        pub SchedulingClass: DWORD,
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct JOBOBJECT_EXTENDED_LIMIT_INFORMATION {
+        pub BasicLimitInformation: JOBOBJECT_BASIC_LIMIT_INFORMATION,
+        pub IoInfo: IO_COUNTERS,
+        pub ProcessMemoryLimit: usize,
+        pub JobMemoryLimit: usize,
+        pub PeakProcessMemoryUsed: usize,
+        pub PeakJobMemoryUsed: usize,
+    }
+
+    #[link(name = "kernel32")]
+    extern "system" {
+        fn CreateJobObjectW(lpJobAttributes: *mut c_void, lpName: *const u16) -> HANDLE;
+        fn SetInformationJobObject(
+            hJob: HANDLE,
+            JobObjectInformationClass: u32,
+            lpJobObjectInformation: *const c_void,
+            cbJobObjectInformationLength: u32,
+        ) -> BOOL;
+        fn AssignProcessToJobObject(hJob: HANDLE, hProcess: HANDLE) -> BOOL;
+        fn CloseHandle(hObject: HANDLE) -> BOOL;
+    }
+
+    pub struct JobObject {
+        handle: HANDLE,
+    }
+
+    unsafe impl Send for JobObject {}
+    unsafe impl Sync for JobObject {}
+
+    impl JobObject {
+        pub fn new() -> Result<Self, String> {
+            unsafe {
+                let handle = CreateJobObjectW(std::ptr::null_mut(), std::ptr::null());
+                if handle.is_null() {
+                    return Err(format!("CreateJobObjectW failed with error: {}", std::io::Error::last_os_error()));
+                }
+                let mut info = std::mem::zeroed::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>();
+                info.BasicLimitInformation.LimitFlags = 0x00002000; // JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+
+                let res = SetInformationJobObject(
+                    handle,
+                    9, // JobObjectExtendedLimitInformation
+                    &info as *const _ as *const c_void,
+                    std::mem::size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
+                );
+
+                if res == 0 {
+                    let err = std::io::Error::last_os_error();
+                    CloseHandle(handle);
+                    return Err(format!("SetInformationJobObject failed with error: {}", err));
+                }
+
+                Ok(JobObject { handle })
+            }
+        }
+
+        pub fn assign_process(&self, process_handle: RawHandle) -> Result<(), String> {
+            unsafe {
+                let res = AssignProcessToJobObject(self.handle, process_handle);
+                if res == 0 {
+                    return Err(format!("AssignProcessToJobObject failed with error: {}", std::io::Error::last_os_error()));
+                }
+                Ok(())
+            }
+        }
+    }
+
+    impl Drop for JobObject {
+        fn drop(&mut self) {
+            unsafe {
+                CloseHandle(self.handle);
+            }
+        }
+    }
 }
 

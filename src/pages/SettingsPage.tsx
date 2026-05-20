@@ -15,36 +15,16 @@ const SettingsPage: React.FC<Props> = ({ onBack }) => {
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   
-  const [updateStatus, setUpdateStatus] = useState<'idle' | 'checking' | 'up-to-date' | 'error'>('idle');
-  const [updateErrorMsg, setUpdateErrorMsg] = useState<string>('');
+  const saveTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     refreshDirs();
     loadPlayitAddr();
 
-    const handleStatus = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const status = customEvent.detail;
-      if (status === 'up-to-date') {
-        setUpdateStatus('up-to-date');
-        setTimeout(() => setUpdateStatus('idle'), 4000);
-      } else if (typeof status === 'string' && status.startsWith('error')) {
-        setUpdateStatus('error');
-        setUpdateErrorMsg(status.replace('error: ', ''));
-        setTimeout(() => setUpdateStatus('idle'), 5000);
-      }
-    };
-
-    window.addEventListener('manual-update-status', handleStatus);
     return () => {
-      window.removeEventListener('manual-update-status', handleStatus);
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
   }, []);
-
-  const handleCheckUpdates = () => {
-    setUpdateStatus('checking');
-    window.dispatchEvent(new CustomEvent('trigger-manual-update-check'));
-  };
 
   const loadPlayitAddr = async () => {
     try {
@@ -59,18 +39,10 @@ const SettingsPage: React.FC<Props> = ({ onBack }) => {
     try {
       await invoke('save_playit_address', { address: playitAddr });
       setSaveStatus('Endereço salvo com sucesso!');
-      setTimeout(() => setSaveStatus(null), 3000);
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = setTimeout(() => setSaveStatus(null), 3000);
     } catch (e) {
       alert("Erro ao salvar endereço: " + e);
-    }
-  };
-
-  const handleStartRelay = async () => {
-    try {
-      const res = await invoke<string>('start_relay_server');
-      alert(res);
-    } catch (e) {
-      alert("Erro ao iniciar Relay: " + e);
     }
   };
 
@@ -96,8 +68,6 @@ const SettingsPage: React.FC<Props> = ({ onBack }) => {
       });
 
       if (selected && typeof selected === 'string') {
-        // O usuário pode selecionar a pasta 'game' ou a raiz 'Deadlock' ou 'DeadlockSV'
-        // Precisamos garantir que o backend valide se existe a pasta 'citadel' lá dentro
         await invoke('set_game_dir', { path: selected });
         await refreshDirs();
       }
@@ -117,20 +87,6 @@ const SettingsPage: React.FC<Props> = ({ onBack }) => {
 
   return (
     <div className="screen" style={{ gap: '3vh' }}>
-      <style dangerouslySetInnerHTML={{__html: `
-        .spinner-mini {
-          width: 12px;
-          height: 12px;
-          border: 2px solid rgba(255,255,255,0.3);
-          border-radius: 50%;
-          border-top-color: #fff;
-          animation: spin-mini 0.8s linear infinite;
-          display: inline-block;
-        }
-        @keyframes spin-mini {
-          to { transform: rotate(360deg); }
-        }
-      `}} />
       <HeaderLogo />
       <div className="config-card" style={{ maxWidth: '600px', width: '90%' }}>
         <div className="config-title">⚙ CONFIGURAÇÕES DO <span>SISTEMA</span></div>
@@ -165,18 +121,10 @@ const SettingsPage: React.FC<Props> = ({ onBack }) => {
                 💾 SALVAR ENDEREÇO PLAYIT
               </button>
               {saveStatus && <span style={{ fontSize: '11px', color: '#22c55e', textAlign: 'center', width: '100%' }}>{saveStatus}</span>}
-
-              <button 
-                className={`option-btn`}
-                style={{ width: '100%', padding: '10px', fontSize: '11px', background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)', marginTop: '8px' }}
-                onClick={handleStartRelay}
-              >
-                🌐 INICIAR RELAY SERVER (MODO MESTRE)
-              </button>
             </div>
 
             <div style={{ fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>
-              * Use esta opção caso o Playit não retorne o endereço automaticamente.
+              * Insira o endereço manual caso o Playit automático não consiga alocar uma porta ativa.
             </div>
           </div>
 
@@ -216,70 +164,6 @@ const SettingsPage: React.FC<Props> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* ATUALIZAÇÃO DO APLICATIVO */}
-          <div className="config-row" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px' }}>
-            <span className="config-label">Atualização do Dominokas</span>
-            
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <button
-                className="option-btn"
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  fontSize: '11px',
-                  background: updateStatus === 'checking' ? 'rgba(240, 185, 11, 0.05)' : 'rgba(240, 185, 11, 0.1)',
-                  borderColor: updateStatus === 'checking' ? 'rgba(240, 185, 11, 0.2)' : 'rgba(240, 185, 11, 0.4)',
-                  color: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  cursor: updateStatus === 'checking' ? 'not-allowed' : 'pointer'
-                }}
-                onClick={handleCheckUpdates}
-                disabled={updateStatus === 'checking'}
-              >
-                {updateStatus === 'checking' ? (
-                  <>
-                    <span className="spinner-mini" /> BUSCANDO ATUALIZAÇÕES...
-                  </>
-                ) : (
-                  '🚀 VERIFICAR SE HÁ ATUALIZAÇÕES'
-                )}
-              </button>
-
-              {updateStatus === 'up-to-date' && (
-                <div style={{
-                  fontSize: '11px',
-                  color: '#10b981',
-                  textAlign: 'center',
-                  background: 'rgba(16, 185, 129, 0.08)',
-                  padding: '8px',
-                  borderRadius: '6px',
-                  border: '1px solid rgba(16, 185, 129, 0.2)',
-                  fontFamily: "'Geist Mono', monospace"
-                }}>
-                  ✨ O Dominokas já está na versão mais recente!
-                </div>
-              )}
-
-              {updateStatus === 'error' && (
-                <div style={{
-                  fontSize: '11px',
-                  color: '#f43f5e',
-                  textAlign: 'center',
-                  background: 'rgba(244, 63, 94, 0.08)',
-                  padding: '8px',
-                  borderRadius: '6px',
-                  border: '1px solid rgba(244, 63, 94, 0.2)',
-                  fontFamily: "'Geist Mono', monospace"
-                }}>
-                  ⚠️ Erro ao buscar atualizações: {updateErrorMsg}
-                </div>
-              )}
-            </div>
-          </div>
-
           <div style={{
             fontSize: '12px',
             color: '#94a3b8',
@@ -308,7 +192,7 @@ const SettingsPage: React.FC<Props> = ({ onBack }) => {
           )}
         </div>
 
-        <button className="btn-create" onClick={onBack} style={{ marginTop: '2vh' }}>
+        <button className="btn-create" onClick={onBack} style={{ marginTop: '3vh' }}>
           <span>VOLTAR</span>
         </button>
       </div>

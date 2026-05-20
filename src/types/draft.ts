@@ -59,4 +59,5 @@ export type WSMessage =
   | { type: 'RESTART_DRAFT' }
   | { type: 'START_MATCH'; steamId?: string }
   | { type: 'END_MATCH' }
-  | { type: 'WORLD_MESSAGE'; text: string };
+  | { type: 'WORLD_MESSAGE'; text: string }
+  | { type: 'HEARTBEAT' };

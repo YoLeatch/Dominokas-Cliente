@@ -35,6 +35,7 @@ const ServerConsolePage: React.FC<Props> = ({ onNavigate }) => {
   const terminalRef = useRef<HTMLDivElement>(null);
   const startTimeRef = useRef<number>(Date.now());
   const [uptime, setUptime] = useState('00:00:00');
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Auto-scroll
   useEffect(() => {
@@ -52,7 +53,10 @@ const ServerConsolePage: React.FC<Props> = ({ onNavigate }) => {
       const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
       setUptime(`${h}:${m}:${s}`);
     }, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
   const sendCommand = async () => {
@@ -85,9 +89,11 @@ const ServerConsolePage: React.FC<Props> = ({ onNavigate }) => {
   const handleRestart = () => {
     if (!showRestartConfirm) {
       setShowRestartConfirm(true);
-      setTimeout(() => setShowRestartConfirm(false), 4000); 
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => setShowRestartConfirm(false), 4000); 
     } else {
       sendMessage({ type: 'RESTART_DRAFT' });
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       setShowRestartConfirm(false);
     }
   };

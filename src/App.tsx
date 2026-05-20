@@ -12,7 +12,7 @@ import BanScreenPage from './pages/BanScreenPage';
 import MatchInProgressPage from './pages/MatchInProgressPage';
 import ServerConsolePage from './pages/ServerConsolePage';
 import SettingsPage from './pages/SettingsPage';
-import { DraftProvider } from './context/DraftContext';
+import { useDraft } from './context/DraftContext';
 import { UpdateModal } from './components/common/UpdateModal';
 
 export type Page =
@@ -31,6 +31,38 @@ export type Page =
 function App() {
   const { user, loading, error } = useSteamUser();
   const [currentPage, setCurrentPage] = useState<Page>('steam-waiting');
+  const { draftState, isConnected, isHost } = useDraft();
+
+  // Roteamento inteligente para reconexão/recuperação automática pós-F5/reload
+  useEffect(() => {
+    if (isConnected && draftState) {
+      if (draftState.phase === 'ban' || draftState.phase === 'pick' || draftState.phase === 'complete') {
+        if (currentPage !== 'draft-screen' && currentPage !== 'server-console') {
+          setCurrentPage('draft-screen');
+        }
+      } else if (draftState.phase === 'match-in-progress') {
+        if (currentPage !== 'match-in-progress') {
+          setCurrentPage('match-in-progress');
+        }
+      } else if (draftState.phase === 'waiting') {
+        if (isHost) {
+          if (currentPage !== 'match-created' && currentPage !== 'match-config') {
+            setCurrentPage('match-created');
+          }
+        } else {
+          if (currentPage !== 'player-waiting') {
+            setCurrentPage('player-waiting');
+          }
+        }
+      }
+    } else {
+      // Se desconectado de um lobby ativo, retorna para a tela de entrada
+      const internalPages: Page[] = ['match-created', 'player-waiting', 'draft-screen', 'match-in-progress', 'server-console'];
+      if (internalPages.includes(currentPage)) {
+        setCurrentPage('enter-match');
+      }
+    }
+  }, [isConnected, draftState?.phase, isHost]);
 
   // Roteamento Automático inteligente: Só redireciona se estiver nas páginas iniciais
   useEffect(() => {
@@ -65,7 +97,7 @@ function App() {
   };
 
   return (
-    <DraftProvider>
+    <>
       <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-dark)' }}>
         <TitleBar />
         <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -87,7 +119,7 @@ function App() {
         </div>
       </div>
       <UpdateModal />
-    </DraftProvider>
+    </>
   );
 }
 

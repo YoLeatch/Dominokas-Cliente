@@ -125,8 +125,14 @@ fn try_start_tunnel(app: AppHandle) -> Result<String, String> {
     std::thread::spawn(move || {
         let reader = BufReader::new(stdout);
         for line in reader.lines() {
-            if let Ok(l) = line { let _ = tx_out.send(l); }
-            else { break; }
+            match line {
+                Ok(l) => {
+                    if tx_out.send(l).is_err() {
+                        break;
+                    }
+                }
+                Err(_) => break,
+            }
         }
     });
 
@@ -134,8 +140,14 @@ fn try_start_tunnel(app: AppHandle) -> Result<String, String> {
     std::thread::spawn(move || {
         let reader = BufReader::new(stderr);
         for line in reader.lines() {
-            if let Ok(l) = line { let _ = tx_err.send(l); }
-            else { break; }
+            match line {
+                Ok(l) => {
+                    if tx_err.send(l).is_err() {
+                        break;
+                    }
+                }
+                Err(_) => break,
+            }
         }
     });
     drop(tx);

@@ -23,6 +23,7 @@ export const MatchInProgressPage: React.FC<Props> = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState<'controls' | 'console'>('controls');
   const [chatText, setChatText] = useState('');
   const [copied, setCopied] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const consoleEndRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +49,13 @@ export const MatchInProgressPage: React.FC<Props> = ({ onNavigate }) => {
     }
   }, [serverLogs, activeTab]);
 
+  // Limpa o timeout ao desmontar
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
   const handleConnect = async () => {
     if (playitAddress) {
       try {
@@ -66,7 +74,8 @@ export const MatchInProgressPage: React.FC<Props> = ({ onNavigate }) => {
     const command = `connect ${playitAddress}`;
     navigator.clipboard.writeText(command);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setCopied(false), 2000);
   };
 
   const handlePause = async () => {
@@ -109,7 +118,7 @@ export const MatchInProgressPage: React.FC<Props> = ({ onNavigate }) => {
 
   const renderHeroCard = (player: any, teamClass: 'amber' | 'sapphire') => {
     const isMe = player.steamId === actualSteamId;
-    const heroInfo = HEROES.find(h => h.name === player.hero);
+    const heroInfo = HEROES.find(h => h.id === player.hero);
 
     return (
       <div 

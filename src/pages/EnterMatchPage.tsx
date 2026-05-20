@@ -15,14 +15,22 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
   const [password, setPassword] = useState('');
   const [isJoining, setIsJoining] = useState(false);
   const { connectToRoom, isConnected } = useDraft();
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Escuta se a conexão foi bem-sucedida pelo WebSocket
   useEffect(() => {
     if (isJoining && isConnected) {
       setIsJoining(false);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (onNavigate) onNavigate('player-waiting');
     }
   }, [isConnected, isJoining, onNavigate]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const handleJoinRoom = async () => {
     const trimmedCode = code.trim().toUpperCase();
@@ -43,10 +51,12 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
       if (codepart.startsWith('AMBR')) role = 'amber';
       else if (codepart.startsWith('SAPH')) role = 'sapphire';
       else if (codepart.startsWith('SPEC')) role = 'spectator';
+      sessionStorage.setItem('dominokas_match_code', codepart);
     } 
     // Se for um endereço direto
     else if (trimmedCode.includes('.') || trimmedCode.includes(':')) {
       ip = trimmedCode.toLowerCase();
+      sessionStorage.setItem('dominokas_match_code', trimmedCode);
     } 
     // Lookup pelo código (Novo sistema)
     else {
@@ -60,6 +70,7 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
           else if (trimmedCode.startsWith('SAPH')) role = 'sapphire';
           else if (trimmedCode.startsWith('SPEC')) role = 'spectator';
           console.log(`[Relay] IP resolvido: ${ip}`);
+          sessionStorage.setItem('dominokas_match_code', trimmedCode);
         } else {
           alert('Código não encontrado ou servidor de relay offline.');
           setIsJoining(false);
@@ -83,10 +94,12 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
     connectToRoom(ip, false, role);
 
     // Timeout de segurança
-    setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       setIsJoining((currentlyJoining) => {
         if (currentlyJoining) {
           alert('Falha ao conectar. Verifique sua conexão.');
+          sessionStorage.removeItem('dominokas_match_code');
           return false;
         }
         return currentlyJoining;

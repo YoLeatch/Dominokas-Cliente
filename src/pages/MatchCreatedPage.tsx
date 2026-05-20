@@ -42,6 +42,7 @@ const MatchCreatedPage: React.FC<Props> = ({ onNavigate }) => {
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [lastAddress, setLastAddress] = useState<string>('');
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     // Carrega o último endereço salvo via invoke
@@ -56,6 +57,10 @@ const MatchCreatedPage: React.FC<Props> = ({ onNavigate }) => {
       }
     };
     loadLastAddr();
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
   const copyCode = (codeToCopy: string, id: string) => {
@@ -64,7 +69,8 @@ const MatchCreatedPage: React.FC<Props> = ({ onNavigate }) => {
 
     navigator.clipboard.writeText(codeToCopy).then(() => {
       setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => setCopiedId(null), 2000);
     }).catch(err => {
       console.error("[Copy] Erro ao copiar:", err);
       alert("Erro ao copiar! Tente selecionar o texto manualmente.");

@@ -10,7 +10,8 @@ fn has_addonroot_line(content: &str) -> bool {
         if trimmed.starts_with("//") {
             return false;
         }
-        trimmed.starts_with("addonroot") && trimmed.contains(ADDONROOT_VALUE)
+        let clean_line = trimmed.replace('"', "");
+        clean_line.starts_with("addonroot") && clean_line.contains(ADDONROOT_VALUE)
     })
 }
 
@@ -44,9 +45,10 @@ pub fn ensure_addonroot(game_dir: &Path) -> Result<bool, String> {
 
     for (i, line) in lines.iter().enumerate() {
         let trimmed = line.trim();
+        let clean_line = trimmed.replace('"', "");
         if trimmed.starts_with("//") {
             // fall through to SearchPaths tracking below
-        } else if trimmed.starts_with("addonroot") {
+        } else if clean_line.starts_with("addonroot") {
             existing_idx = Some(i);
             break;
         }
@@ -63,7 +65,7 @@ pub fn ensure_addonroot(game_dir: &Path) -> Result<bool, String> {
 
     let newline = if content.contains("\r\n") { "\r\n" } else { "\n" };
 
-    if let Some(i) = existing_idx {
+    let new_content = if let Some(i) = existing_idx {
         let line = lines[i];
         if line.contains(ADDONROOT_VALUE) {
             return Ok(false);
@@ -73,30 +75,47 @@ pub fn ensure_addonroot(game_dir: &Path) -> Result<bool, String> {
         let indent = &line[..line.len() - stripped.len()];
         let mut result: Vec<String> = lines.iter().map(|l| l.to_string()).collect();
         result[i] = format!("{}addonroot\t{}", indent, ADDONROOT_VALUE);
-        let new_content = result.join(newline);
-        std::fs::write(&gi_path, &new_content)
-            .map_err(|e| format!("Failed to write gameinfo.gi: {}", e))?;
-        return Ok(true);
-    }
-
-    let idx = insert_idx
-        .ok_or_else(|| "Could not find SearchPaths block in gameinfo.gi".to_string())?;
-
-    // Detect indentation from the next line after the brace
-    let indent = if idx < lines.len() {
-        let next = lines[idx];
-        let stripped = next.trim_start();
-        &next[..next.len() - stripped.len()]
+        result.join(newline)
     } else {
-        "\t\t"
+        let idx = insert_idx
+            .ok_or_else(|| "Could not find SearchPaths block in gameinfo.gi".to_string())?;
+
+        // Detect indentation from the next line after the brace
+        let indent = if idx < lines.len() {
+            let next = lines[idx];
+            let stripped = next.trim_start();
+            &next[..next.len() - stripped.len()]
+        } else {
+            "\t\t"
+        };
+
+        let mut result: Vec<String> = lines.iter().map(|l| l.to_string()).collect();
+        result.insert(idx, format!("{}addonroot\t{}", indent, ADDONROOT_VALUE));
+        result.join(newline)
     };
 
-    let mut result: Vec<String> = lines.iter().map(|l| l.to_string()).collect();
-    result.insert(idx, format!("{}addonroot\t{}", indent, ADDONROOT_VALUE));
+    let metadata = std::fs::metadata(&gi_path)
+        .map_err(|e| format!("Failed to get gameinfo.gi metadata: {}", e))?;
+    let original_readonly = metadata.permissions().readonly();
 
-    let new_content = result.join(newline);
+    if original_readonly {
+        let mut permissions = metadata.permissions();
+        permissions.set_readonly(false);
+        std::fs::set_permissions(&gi_path, permissions)
+            .map_err(|e| format!("Failed to make gameinfo.gi writable: {}", e))?;
+    }
+
     std::fs::write(&gi_path, &new_content)
         .map_err(|e| format!("Failed to write gameinfo.gi: {}", e))?;
+
+    if original_readonly {
+        let mut permissions = std::fs::metadata(&gi_path)
+            .map_err(|e| format!("Failed to get gameinfo.gi metadata after write: {}", e))?
+            .permissions();
+        permissions.set_readonly(true);
+        std::fs::set_permissions(&gi_path, permissions)
+            .map_err(|e| format!("Failed to restore gameinfo.gi readonly attribute: {}", e))?;
+    }
 
     Ok(true)
 }

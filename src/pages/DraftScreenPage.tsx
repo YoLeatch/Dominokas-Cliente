@@ -49,9 +49,9 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
 
   const handleSelectHero = (heroId: string, heroName: string) => {
     if (!user || !canIAction || phase === 'complete' || draftState.isPaused) return;
-    setSelectedHero(heroName);
+    setSelectedHero(heroId);
     // SELECT_HERO informa ao host que este jogador está olhando para um herói
-    sendMessage({ type: 'SELECT_HERO', steamId: actualSteamId!, team: myTeam!, heroId: heroName });
+    sendMessage({ type: 'SELECT_HERO', steamId: actualSteamId!, team: myTeam!, heroId: heroId });
   };
 
   const handleConfirmAction = () => {
@@ -60,7 +60,7 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
       sendMessage({ type: 'BAN_HERO', steamId: actualSteamId!, team: myTeam!, heroId: selectedHero });
       setSelectedHero(null);
     } else {
-      sendMessage({ type: 'LOCK_HERO', steamId: actualSteamId!, team: myTeam! });
+      sendMessage({ type: 'LOCK_HERO', steamId: actualSteamId!, team: myTeam!, heroId: selectedHero });
     }
   };
 
@@ -167,8 +167,8 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
             return (
               <div key={i} className="player-row">
                 <div className={`player-avatar ${isCurrentTurn ? (phase === 'ban' ? 'selected-ban' : 'selected-pick') : ''}`}>
-                  {p?.hero && HEROES.find(h => h.name === p.hero) && (
-                    <img src={HEROES.find(h => h.name === p.hero)?.image} alt="hero" />
+                  {p?.hero && HEROES.find(h => h.id === p.hero) && (
+                    <img src={HEROES.find(h => h.id === p.hero)?.image} alt="hero" />
                   )}
                 </div>
                 <span
@@ -191,7 +191,7 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
             <div className="team-bans">
               {[0, 2].map((i) => {
                 const h = bannedHeroes[i];
-                const heroData = h ? HEROES.find(x => x.name === h) : null;
+                const heroData = h ? HEROES.find(x => x.id === h) : null;
                 return (
                   <div key={i} className={`ban-slot ${heroData ? 'filled' : ''}`}>
                     {heroData && (
@@ -208,7 +208,7 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
             <div className="team-bans">
               {[1, 3].map((i) => {
                 const h = bannedHeroes[i];
-                const heroData = h ? HEROES.find(x => x.name === h) : null;
+                const heroData = h ? HEROES.find(x => x.id === h) : null;
                 return (
                   <div key={i} className={`ban-slot ${heroData ? 'filled' : ''}`}>
                     {heroData && (
@@ -233,11 +233,11 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
                   const hero = HEROES[index];
                   if (!hero) return <div key={col} className="hero-cell" />;
 
-                  const isBanned = bannedHeroes.includes(hero.name);
-                  const pickedByAmber = amberTeam.find(p => p.hero === hero.name && p.locked);
-                  const pickedBySapphire = sapphireTeam.find(p => p.hero === hero.name && p.locked);
+                  const isBanned = bannedHeroes.includes(hero.id);
+                  const pickedByAmber = amberTeam.find(p => p.hero === hero.id && p.locked);
+                  const pickedBySapphire = sapphireTeam.find(p => p.hero === hero.id && p.locked);
                   const isPicked = !!(pickedByAmber || pickedBySapphire);
-                  const isSelected = selectedHero === hero.name;
+                  const isSelected = selectedHero === hero.id;
                   const isPickedByMyTeam = !!(myTeam === 'amber' ? pickedByAmber : pickedBySapphire);
                   
                   let canClick = false;
@@ -286,7 +286,7 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
             {phase === 'complete'
               ? 'DRAFT FINALIZADO'
               : selectedHero
-                ? selectedHero.toUpperCase()
+                ? (HEROES.find(h => h.id === selectedHero)?.name || selectedHero).toUpperCase()
                 : isMyTurn
                   ? (phase === 'ban' ? 'SELECIONE UM HERÓI PARA BANIR' : 'ESCOLHA SEU HERÓI')
                   : 'AGUARDANDO TURNO...'}
@@ -327,8 +327,8 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
             return (
               <div key={i} className="player-row">
                 <div className={`player-avatar ${isCurrentTurn ? (phase === 'ban' ? 'selected-ban' : 'selected-pick') : ''}`}>
-                  {p?.hero && HEROES.find(h => h.name === p.hero) && (
-                    <img src={HEROES.find(h => h.name === p.hero)?.image} alt="hero" />
+                  {p?.hero && HEROES.find(h => h.id === p.hero) && (
+                    <img src={HEROES.find(h => h.id === p.hero)?.image} alt="hero" />
                   )}
                 </div>
                 <span

@@ -21,8 +21,12 @@ if (typeof window !== 'undefined') {
 }
 
 
+import { DraftProvider } from './context/DraftContext';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <DraftProvider>
+      <App />
+    </DraftProvider>
   </React.StrictMode>
 );

@@ -135,6 +135,65 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, []);
 
+  // Persistir o draftState sempre que houver conexão ativa
+  useEffect(() => {
+    if (draftState && isConnected) {
+      sessionStorage.setItem('dominokas_draft_state', JSON.stringify(draftState));
+    }
+  }, [draftState, isConnected]);
+
+  // Loop de Heartbeat / Keep-Alive para evitar que o túnel e a conexão caiam por inatividade
+  useEffect(() => {
+    if (!isConnected || !socket) return;
+
+    console.log("[DraftContext] Iniciando loop de heartbeat para manter a conexao ativa...");
+    
+    const intervalId = setInterval(() => {
+      if (socket.readyState === WebSocket.OPEN) {
+        console.log("[DraftContext] Enviando HEARTBEAT keep-alive...");
+        socket.send(JSON.stringify({ type: 'HEARTBEAT' }));
+      }
+    }, 20000); // Envia a cada 20 segundos
+
+    return () => {
+      console.log("[DraftContext] Parando loop de heartbeat.");
+      clearInterval(intervalId);
+    };
+  }, [isConnected, socket]);
+
+  // Recuperação de sessão automática em caso de recarregamento (F5/Reload)
+  useEffect(() => {
+    if (!user) return; // Espera obter o usuário Steam para garantir dados completos no JOIN_ROOM
+
+    const savedIp = sessionStorage.getItem('dominokas_ws_ip');
+    const savedIsHost = sessionStorage.getItem('dominokas_is_host') === 'true';
+    const savedRole = sessionStorage.getItem('dominokas_role') as HostRole | null;
+    const savedDraftState = sessionStorage.getItem('dominokas_draft_state');
+
+    if (savedDraftState) {
+      try {
+        const parsed = JSON.parse(savedDraftState);
+        setDraftState(parsed);
+        hostStateRef.current = parsed;
+      } catch (e) {
+        console.error("[DraftContext] Erro ao carregar draftState do sessionStorage:", e);
+      }
+    }
+
+    if (savedIp && savedRole) {
+      console.log(`[DraftContext] Auto-reconectando ao lobby salvo: IP=${savedIp}, IsHost=${savedIsHost}, Role=${savedRole}`);
+      emitLog('Restaurando sessão anterior...', 'system');
+      
+      // Define a última role solicitada antes de conectar
+      lastRequestedRoleRef.current = savedRole;
+      
+      connectToRoom(savedIp, savedIsHost, savedRole).catch(err => {
+        console.error("[DraftContext] Falha na auto-reconexão:", err);
+        emitLog('Falha ao restaurar sessão anterior.', 'error');
+      });
+    }
+  }, [user]);
+
   const generateMatchCode = (prefix: string) => {
     return prefix + "-" + Math.random().toString(36).substring(2, 7).toUpperCase();
   };
@@ -209,6 +268,11 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     hostStateRef.current = freshState;
     lastRequestedRoleRef.current = role;
+
+    // Salva a role e o código de partida do Host no sessionStorage
+    sessionStorage.setItem('dominokas_role', role);
+    const myMatchCode = freshState.matchCodes[role];
+    sessionStorage.setItem('dominokas_match_code', myMatchCode);
 
     // Registrar códigos no Relay Server (dominokas-list.playit.plus)
     emitLog('Registrando códigos no Relay Server...', 'system');
@@ -286,6 +350,12 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (wsRef.current) wsRef.current.close();
 
       setIsHost(host);
+      
+      // Salva os dados de conexão no sessionStorage
+      sessionStorage.setItem('dominokas_ws_ip', ip);
+      sessionStorage.setItem('dominokas_is_host', JSON.stringify(host));
+      sessionStorage.setItem('dominokas_role', role);
+
       const wsUrl = `ws://${ip}`;
       const ws = new WebSocket(wsUrl);
 
@@ -740,6 +810,13 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setIsConnected(false);
     setIsHost(false);
     hasSentInitialJoin.current = false;
+    
+    // Limpa os dados persistidos no sessionStorage
+    sessionStorage.removeItem('dominokas_ws_ip');
+    sessionStorage.removeItem('dominokas_is_host');
+    sessionStorage.removeItem('dominokas_role');
+    sessionStorage.removeItem('dominokas_match_code');
+    sessionStorage.removeItem('dominokas_draft_state');
   };
 
   useEffect(() => {

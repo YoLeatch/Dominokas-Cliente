@@ -78,9 +78,6 @@ fn get_playit_address(app: tauri::AppHandle) -> Result<String, String> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    // Try to patch gameinfo.gi early — will fail silently if game is running
-    patch_gameinfo_on_startup();
-
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
             for arg in &args {
@@ -153,8 +150,15 @@ pub fn run() {
                         connect::set_game_dir_override(Some(std::path::PathBuf::from(path)));
                     }
                 }
+                patch_gameinfo_on_startup();
                 telemetry::maybe_send_install(&app_handle);
                 telemetry::maybe_send_heartbeat(&app_handle);
+
+                // Inicia o Relay Server automaticamente em background na porta 8080
+                match relay::start_relay_server().await {
+                    Ok(_) => println!("[startup] Relay Server iniciado automaticamente na porta 8080"),
+                    Err(e) => println!("[startup] Falha ao iniciar Relay Server: {}", e),
+                }
             });
 
             let show = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
