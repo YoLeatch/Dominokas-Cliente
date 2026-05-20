@@ -60,7 +60,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc2RjA1Q0M3RkVFQzkzMjUKUldRbGsreit4MXp3ZG80akhCTnYrb1JCNEl0dExFdXk1eE9URld4RkMyVzU5TW5Vc3hCWDh3NzMK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
       "endpoints": [
         "https://raw.githubusercontent.com/YoLeatch/Dominokas-Cliente/main/update.json"
       ]
