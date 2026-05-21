@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { check } from '@tauri-apps/plugin-updater';
 import { useDraft } from '../context/DraftContext';
 import { HeaderLogo } from '../components/common/HeaderLogo';
 import '../styles/EnterMatch.css';
@@ -31,6 +32,17 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
   }, []);
 
   const handleJoinRoom = async () => {
+    try {
+      const update = await check();
+      if (update) {
+        window.dispatchEvent(new CustomEvent('trigger-manual-update-check'));
+        alert('Uma atualização obrigatória está disponível (v' + update.version + '). Por favor, atualize o cliente antes de jogar.');
+        return;
+      }
+    } catch (err) {
+      console.error('[Update Check Error in handleJoinRoom]', err);
+    }
+
     const trimmedCode = code.trim().toUpperCase();
     if (!trimmedCode || trimmedCode.length < 4) {
       alert('Por favor, insira um código de partida válido.');
@@ -105,7 +117,18 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
     }, 5000);
   };
 
-  const handleCreateRoom = () => {
+  const handleCreateRoom = async () => {
+    try {
+      const update = await check();
+      if (update) {
+        window.dispatchEvent(new CustomEvent('trigger-manual-update-check'));
+        alert('Uma atualização obrigatória está disponível (v' + update.version + '). Por favor, atualize o cliente antes de jogar.');
+        return;
+      }
+    } catch (err) {
+      console.error('[Update Check Error in handleCreateRoom]', err);
+    }
+
     if (!user) {
       alert('Perfil Steam não detectado. Por favor, certifique-se de que a Steam está aberta antes de criar uma sala como Host.');
       return;

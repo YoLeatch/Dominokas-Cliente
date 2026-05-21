@@ -1,11 +1,11 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.2",
   "notes": "Lançamento inicial do Dominokas com sistema de auto-updater premium integrado, conexão inteligente e console do Host aprimorado!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJERkFDRDYzQUEzNTJBQjUKUldTMUtqV3FZODM2TFJrbzhyTUNtT0ZaS0xVSmxGQ3hEdmttd0s0TlBmY1hsbmNUaVg1c0dpUjIK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "COLOQUE_A_ASSINATURA_AQUI_SE_HOUVER",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/download/v0.1.0/Dominokas_0.1.0_x64_en-US.msi.zip"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkZDMVFzcEJCMy9qSzUwZlBzN0VvVlVRMjdZSUNCUDBPYXRmSHUrN0k0ZEZrcVNnWisyUWxTcERDV0N1dXd6OEt5MDFQMWQ1clJEK3M1dlR3MGZjVFFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5MzgwOTc3CWZpbGU6RG9taW5va2FzXzAuMS4yX3g2NF9lbi1VUy5tc2kKRUNwcVRoUVZKN3QxcGt5ZEpIRHpza3RoN05uLzNkQXcxMnA5VmIvOE5UNXhPajVBWXhkYWVKWFozQVlxMzAwalRBdnhIbXdhdlh5eC9CS1VDWU85Q3c9PQo=",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/download/Lastest/Dominokas_0.1.2_x64_en-US.msi"
     }
   }
 }
