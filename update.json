@@ -1,11 +1,11 @@
 {
-  "version": "0.1.3",
-  "notes": "Nova versão do Dominokas Launcher com suporte aos 7 novos heróis (Billy, Lady Geist, Dynamo, Pocket, Ivy, Celeste e Silver) e correções do sistema de draft!",
+  "version": "0.1.4",
+  "notes": "Nova versão do Dominokas Launcher com suporte a grade rolável dinâmica para seleção de todos os 40 heróis nas telas de Draft e Ban de forma premium!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSklyUkZ0MTRhYWNvaVBzcWtPK25CQXdqQUVsd2JUeUhDaFFNeHVJeUZKd2lKK2h0L2cwZzR4TVhYZGZwcGJPb2lCVXh6K1FBbTFKYnh6cVRzSWdPV3djPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5MzkzMTUyCWZpbGU6RG9taW5va2FzXzAuMS4zX3g2NF9lbi1VUy5tc2kKZXZjV3hpbDF4Z0RMOTZvOEhpN3VyU0tLZWh3OWlIOEFiQ0k0cnYwbFRZU0ZNTXBXSjk2MWlidE5XckVVNTQyci9BTmtCQ2dDSVBsSm85Um40YlBBQ1E9PQo=",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.3_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkFwNS93dmlpM05FQzE0eTdTNk9SM3VMdldFVURjTzBvdVVVaTh0N2ZrQ0c5akZiTXN1a2xBSkVVMk9qV2U4My9Lek5JS3FETng2N3FTWk9JOWN0amc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5Mzk1NTM3CWZpbGU6RG9taW5va2FzXzAuMS40X3g2NF9lbi1VUy5tc2kKRnV0cVoxMWFLSGhIb01OSG9EZlF2c0E3VG1YbHl4eVM1dTU2enNYelFRMGFSdVU4Y3pubkhBZ0dPeS9XbW9IOVQyem4rdlhLejFxbHkrZTBtaGhTQWc9PQo=",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.4_x64_en-US.msi"
     }
   }
 }

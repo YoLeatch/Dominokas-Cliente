@@ -149,36 +149,30 @@ const BanScreenPage: React.FC<BanScreenProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          {/* Hero Grid — 6 linhas × 5 colunas */}
-          <div className="hero-grid-container" style={{ display: 'flex', flexDirection: 'column', gap: '1vh' }}>
-            {[0, 1, 2, 3, 4, 5].map((row) => (
-              <div key={row} className="hero-grid">
-                {[0, 1, 2, 3, 4].map((col) => {
-                  const index = row * 5 + col;
-                  const hero = HEROES[index];
-                  if (!hero) return <div key={col} className="hero-cell" />;
+          {/* Hero Grid — Grade Rolável Dinâmica para todos os Heróis */}
+          <div className="hero-grid-scrollable-container">
+            <div className="hero-grid">
+              {HEROES.map((hero) => {
+                const isBanned = bannedHeroes.includes(hero.id);
+                const isSelected = selectedHero === hero.id;
+                const canClick = !isBanned && phase === 'ban';
 
-                  const isBanned = bannedHeroes.includes(hero.id);
-                  const isSelected = selectedHero === hero.id;
-                  const canClick = !isBanned && phase === 'ban';
-
-                  return (
-                    <div
-                      key={col}
-                      className={[
-                        'hero-cell',
-                        isBanned ? 'banned' : '',
-                        isSelected ? 'active-pick' : '',
-                      ].filter(Boolean).join(' ')}
-                      onClick={() => canClick && handleSelectHero(hero.id)}
-                      style={isSelected ? { borderColor: 'var(--color-ban-red)', backgroundColor: '#2a1520' } : undefined}
-                    >
-                      <img src={hero.image} alt={hero.name} title={hero.name} />
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
+                return (
+                  <div
+                    key={hero.id}
+                    className={[
+                      'hero-cell',
+                      isBanned ? 'banned' : '',
+                      isSelected ? 'active-pick' : '',
+                    ].filter(Boolean).join(' ')}
+                    onClick={() => canClick && handleSelectHero(hero.id)}
+                    style={isSelected ? { borderColor: 'var(--color-ban-red)', backgroundColor: '#2a1520' } : undefined}
+                  >
+                    <img src={hero.image} alt={hero.name} title={hero.name} />
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Label + Botão */}
