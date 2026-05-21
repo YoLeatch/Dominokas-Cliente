@@ -56,6 +56,7 @@ interface DraftContextType {
   tunnelAddress: string | null;
   tunnelError: string | null;
   serverLogs: LogEntry[];
+  user: { name: string, steam_id: string } | null;
   connectToRoom: (ip: string, host: boolean, role?: HostRole) => Promise<void>;
   sendMessage: (msg: WSMessage) => void;
   disconnect: () => void;
@@ -886,7 +887,7 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [isHost, isConnected, draftState.phase]);
 
   return (
-    <DraftContext.Provider value={{ draftState, isConnected, isHost, isGameServerRunning, tunnelAddress, tunnelError, serverLogs, connectToRoom, sendMessage, disconnect, startHostServer, updateMatchConfig, setDraftState, setIsConnected, setIsGameServerRunning, addCommandLog, sendWorldMessage, clearLogs }}>
+    <DraftContext.Provider value={{ draftState, isConnected, isHost, isGameServerRunning, tunnelAddress, tunnelError, serverLogs, user, connectToRoom, sendMessage, disconnect, startHostServer, updateMatchConfig, setDraftState, setIsConnected, setIsGameServerRunning, addCommandLog, sendWorldMessage, clearLogs }}>
       {children}
     </DraftContext.Provider>
   );

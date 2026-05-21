@@ -11,10 +11,8 @@ interface Props {
 
 const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
   const [code, setCode] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState('');
   const [isJoining, setIsJoining] = useState(false);
-  const { connectToRoom, isConnected } = useDraft();
+  const { connectToRoom, isConnected, user } = useDraft();
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Escuta se a conexão foi bem-sucedida pelo WebSocket
@@ -108,16 +106,39 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
   };
 
   const handleCreateRoom = () => {
-    if (!showPassword) {
-      setShowPassword(true);
+    if (!user) {
+      alert('Perfil Steam não detectado. Por favor, certifique-se de que a Steam está aberta antes de criar uma sala como Host.');
       return;
     }
+
+    const ALLOWED_IDS = ["1520598345", "355235505"];
     
-    if (password === 'noke@mee8128') {
+    // Obter o SteamID64 bruto do usuário
+    const steamId64Str = user.steam_id || '';
+    
+    // Obter o Account ID correspondente (SteamID32) convertendo BigInt de 64 bits para AccountID
+    let accountIdStr = '';
+    try {
+      if (steamId64Str) {
+        const id64 = BigInt(steamId64Str);
+        // Constante base do SteamID64 (76561197960265728)
+        const accountId = id64 - BigInt("76561197960265728");
+        accountIdStr = accountId.toString();
+      }
+    } catch (e) {
+      console.error("Erro ao converter SteamID:", e);
+    }
+
+    console.log(`[EnterMatch] Tentando criar sala. User SteamID64='${steamId64Str}', AccountID='${accountIdStr}'`);
+
+    const isAllowed = 
+      ALLOWED_IDS.includes(steamId64Str) || 
+      ALLOWED_IDS.includes(accountIdStr);
+
+    if (isAllowed) {
       if (onNavigate) onNavigate('match-config');
     } else {
-      alert('Senha de administrador incorreta!');
-      setPassword('');
+      alert(`Seu ID Steam (${steamId64Str || 'Desconhecido'}) não possui permissão de administrador para hospedar partidas.`);
     }
   };
 
@@ -127,58 +148,33 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
       <div className="center-content">
         <span className="brand-title">DOMINOKAS <span>CLIENT</span></span>
         
-        {!showPassword ? (
-          <>
-            <span className="code-label">Insira o código da partida ou IP:</span>
-            <input
-              className="code-input"
-              type="text"
-              placeholder="XXXX-0000"
-              maxLength={500}
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              spellCheck={false}
-              disabled={isJoining}
-              style={{ width: '100%', maxWidth: '500px' }}
-            />
-            <button 
-              className="btn-enter" 
-              onClick={handleJoinRoom}
-              disabled={isJoining}
-              style={{ opacity: isJoining ? 0.7 : 1 }}
-            >
-              <span>{isJoining ? 'CONECTANDO...' : 'ENTRAR'}</span>
-            </button>
-            <button 
-              className="btn-enter" 
-              style={{ marginTop: '10px', background: 'transparent', border: 'none', color: 'var(--color-gold)' }}
-              onClick={handleCreateRoom}
-            >
-              <span>CRIAR SALA (HOST)</span>
-            </button>
-          </>
-        ) : (
-          <>
-            <span className="code-label" style={{ color: 'var(--color-gold)' }}>Senha de Administrador:</span>
-            <input
-              className="code-input"
-              type="password"
-              placeholder="••••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button className="btn-enter" onClick={handleCreateRoom}>
-              <span>AUTENTICAR</span>
-            </button>
-            <button 
-              className="btn-enter secondary-btn" 
-              style={{ marginTop: '10px', background: 'transparent', border: 'none', color: '#64748b', fontSize: '12px' }}
-              onClick={() => { setShowPassword(false); setPassword(''); }}
-            >
-              <span>VOLTAR</span>
-            </button>
-          </>
-        )}
+        <span className="code-label">Insira o código da partida ou IP:</span>
+        <input
+          className="code-input"
+          type="text"
+          placeholder="XXXX-0000"
+          maxLength={500}
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          spellCheck={false}
+          disabled={isJoining}
+          style={{ width: '100%', maxWidth: '500px' }}
+        />
+        <button 
+          className="btn-enter" 
+          onClick={handleJoinRoom}
+          disabled={isJoining}
+          style={{ opacity: isJoining ? 0.7 : 1 }}
+        >
+          <span>{isJoining ? 'CONECTANDO...' : 'ENTRAR'}</span>
+        </button>
+        <button 
+          className="btn-enter" 
+          style={{ marginTop: '10px', background: 'transparent', border: 'none', color: 'var(--color-gold)' }}
+          onClick={handleCreateRoom}
+        >
+          <span>CRIAR SALA (HOST)</span>
+        </button>
       </div>
     </div>
   );
