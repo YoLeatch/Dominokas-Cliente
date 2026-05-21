@@ -841,7 +841,7 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           'doorman', 'mirage', 'digger', 'chrono', 'engineer', 'bookworm', 'shiv', 
           'archer', 'viscous', 'warden', 'wraith', 'yamato', 'familiar', 'fencer', 
           'frank', 'gigawatt', 'hornet', 'kali', 'magician', 'nano', 'necro', 'priest',
-          'vampirebat'
+          'vampirebat', 'punkgoat', 'spectre', 'sumo', 'synth', 'tengu', 'unicorn', 'werewolf'
         ];
         
         const banned = state.bannedHeroes || [];
