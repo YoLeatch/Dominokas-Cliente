@@ -163,7 +163,7 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
           <div style={{ height: '8vh' }} />
           {[0, 1, 2, 3, 4, 5].slice(0, playersPerTeam).map((i) => {
             const p = amberTeam[i];
-            const isCurrentTurn = draftState.currentTurnTeam === 'amber' && p && !p.locked;
+            const isCurrentTurn = draftState.currentTurnPlayerId === p?.steamId;
             return (
               <div key={i} className="player-row">
                 <div className={`player-avatar ${isCurrentTurn ? (phase === 'ban' ? 'selected-ban' : 'selected-pick') : ''}`}>
@@ -185,42 +185,64 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
         {/* ── Centro ── idêntico ao BanScreenPage */}
         <div className="center">
 
-          {/* Bans row: BAN_ORDER = ['amber', 'sapphire', 'amber', 'sapphire'] */}
-          {/* Slots 0 e 2 são do Time Âmbar (Esquerda), Slots 1 e 3 são do Time Safira (Direita) */}
+          {/* Bans row: Renderiza bans por time real baseado no DRAFT_SEQUENCE */}
+          {/* Sequência real: Turn 0=amber, Turn 1=sapphire, Turn 8=sapphire, Turn 9=amber */}
           <div className="bans-row">
             <div className="team-bans">
-              {[0, 2].map((i) => {
-                const h = bannedHeroes[i];
-                const heroData = h ? HEROES.find(x => x.id === h) : null;
-                return (
-                  <div key={i} className={`ban-slot ${heroData ? 'filled' : ''}`}>
-                    {heroData && (
-                      <img
-                        src={heroData.image}
-                        alt="ban"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }}
-                      />
-                    )}
-                  </div>
-                );
-              })}
+              {(() => {
+                const BAN_SEQUENCE = [
+                  { team: 'amber' },    // Turn 0
+                  { team: 'sapphire' },  // Turn 1
+                  { team: 'sapphire' },  // Turn 8
+                  { team: 'amber' },     // Turn 9
+                ];
+                const amberBans = bannedHeroes
+                  .map((h, i) => ({ hero: h, team: BAN_SEQUENCE[i]?.team }))
+                  .filter(b => b.team === 'amber' && !b.hero.startsWith('SKIPPED_'));
+                return [0, 1].map((i) => {
+                  const entry = amberBans[i];
+                  const heroData = entry ? HEROES.find(x => x.id === entry.hero) : null;
+                  return (
+                    <div key={i} className={`ban-slot ${heroData ? 'filled' : ''}`}>
+                      {heroData && (
+                        <img
+                          src={heroData.image}
+                          alt="ban"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }}
+                        />
+                      )}
+                    </div>
+                  );
+                });
+              })()}
             </div>
             <div className="team-bans">
-              {[1, 3].map((i) => {
-                const h = bannedHeroes[i];
-                const heroData = h ? HEROES.find(x => x.id === h) : null;
-                return (
-                  <div key={i} className={`ban-slot ${heroData ? 'filled' : ''}`}>
-                    {heroData && (
-                      <img
-                        src={heroData.image}
-                        alt="ban"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }}
-                      />
-                    )}
-                  </div>
-                );
-              })}
+              {(() => {
+                const BAN_SEQUENCE = [
+                  { team: 'amber' },    // Turn 0
+                  { team: 'sapphire' },  // Turn 1
+                  { team: 'sapphire' },  // Turn 8
+                  { team: 'amber' },     // Turn 9
+                ];
+                const sapphireBans = bannedHeroes
+                  .map((h, i) => ({ hero: h, team: BAN_SEQUENCE[i]?.team }))
+                  .filter(b => b.team === 'sapphire' && !b.hero.startsWith('SKIPPED_'));
+                return [0, 1].map((i) => {
+                  const entry = sapphireBans[i];
+                  const heroData = entry ? HEROES.find(x => x.id === entry.hero) : null;
+                  return (
+                    <div key={i} className={`ban-slot ${heroData ? 'filled' : ''}`}>
+                      {heroData && (
+                        <img
+                          src={heroData.image}
+                          alt="ban"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }}
+                        />
+                      )}
+                    </div>
+                  );
+                });
+              })()}
             </div>
           </div>
 
