@@ -14,6 +14,7 @@ import ServerConsolePage from './pages/ServerConsolePage';
 import SettingsPage from './pages/SettingsPage';
 import { useDraft } from './context/DraftContext';
 import { UpdateModal } from './components/common/UpdateModal';
+import packageJson from '../package.json';
 
 export type Page =
   | 'steam-waiting'
@@ -108,14 +109,14 @@ function App() {
         <div style={{ 
           position: 'absolute', 
           bottom: '10px', 
-          right: '15px', 
+          left: '15px', 
           fontSize: '10px', 
           color: 'rgba(100, 116, 139, 0.5)', 
           fontFamily: "'Geist Mono', monospace", 
           pointerEvents: 'none',
           letterSpacing: '0.5px'
         }}>
-          v0.1 beta (ainda em desenvolvimento)
+          v{packageJson.version}
         </div>
       </div>
       <UpdateModal />
