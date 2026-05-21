@@ -1,11 +1,11 @@
 {
-  "version": "0.1.2",
-  "notes": "Lançamento inicial do Dominokas com sistema de auto-updater premium integrado, conexão inteligente e console do Host aprimorado!",
+  "version": "0.1.3",
+  "notes": "Nova versão do Dominokas Launcher com suporte aos 7 novos heróis (Billy, Lady Geist, Dynamo, Pocket, Ivy, Celeste e Silver) e correções do sistema de draft!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSk0rOHM1TlM0cnR4Tmk4OGVqUldqTVhtRDVJOGtpYzRHTmVqamVKOGhrTVlKNmF4cmR0dFpaSmU5T3g2WDFZWVRkc1VUVDlUQWc5YXpEUE5DSFN6NEF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5MzgyNzU1CWZpbGU6RG9taW5va2FzXzAuMS4yX3g2NF9lbi1VUy5tc2kKc0pFZ01YTEVuaDU1cmtIa2FwdGllQWw1SEl1NTdDRHhMMzRYMkxCakdaalpGMDB5RC82aWlseGZFb25KaWhyLzV0eGxOVTlTVVFIMG5yOFZGMit5QWc9PQo=",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/download/Lastest/Dominokas_0.1.2_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSklyUkZ0MTRhYWNvaVBzcWtPK25CQXdqQUVsd2JUeUhDaFFNeHVJeUZKd2lKK2h0L2cwZzR4TVhYZGZwcGJPb2lCVXh6K1FBbTFKYnh6cVRzSWdPV3djPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5MzkzMTUyCWZpbGU6RG9taW5va2FzXzAuMS4zX3g2NF9lbi1VUy5tc2kKZXZjV3hpbDF4Z0RMOTZvOEhpN3VyU0tLZWh3OWlIOEFiQ0k0cnYwbFRZU0ZNTXBXSjk2MWlidE5XckVVNTQyci9BTmtCQ2dDSVBsSm85Um40YlBBQ1E9PQo=",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/download/Lastest/Dominokas_0.1.3_x64_en-US.msi"
     }
   }
 }
