@@ -90,12 +90,12 @@ const BanScreenPage: React.FC<BanScreenProps> = ({ onNavigate }) => {
           <div style={{ height: '8vh' }} />
           {[0, 1, 2, 3, 4, 5].slice(0, playersPerTeam).map((i) => {
             const p = amberTeam[i];
-            const isCurrentTurn = draftState.currentTurnTeam === 'amber' && p && !p.locked;
+            const isCurrentTurn = draftState.currentTurnPlayerId === p?.steamId;
             return (
               <div key={i} className="player-row">
                 <div className={`player-avatar ${isCurrentTurn ? 'selected-ban' : ''}`}>
-                  {p?.hero && (
-                    <img src={HEROES.find(h => h.name === p.hero)?.image} alt="hero" />
+                  {p?.hero && HEROES.find(h => h.id === p.hero) && (
+                    <img src={HEROES.find(h => h.id === p.hero)?.image} alt="hero" />
                   )}
                 </div>
                 <span
@@ -116,7 +116,7 @@ const BanScreenPage: React.FC<BanScreenProps> = ({ onNavigate }) => {
             <div className="team-bans">
               {[0, 1].map((i) => {
                 const h = bannedHeroes[i];
-                const heroData = h ? HEROES.find(x => x.name === h) : null;
+                const heroData = h ? HEROES.find(x => x.id === h) : null;
                 return (
                   <div key={i} className={`ban-slot ${heroData ? 'filled' : ''}`}>
                     {heroData && (
@@ -133,7 +133,7 @@ const BanScreenPage: React.FC<BanScreenProps> = ({ onNavigate }) => {
             <div className="team-bans">
               {[2, 3].map((i) => {
                 const h = bannedHeroes[i];
-                const heroData = h ? HEROES.find(x => x.name === h) : null;
+                const heroData = h ? HEROES.find(x => x.id === h) : null;
                 return (
                   <div key={i} className={`ban-slot ${heroData ? 'filled' : ''}`}>
                     {heroData && (
@@ -158,8 +158,8 @@ const BanScreenPage: React.FC<BanScreenProps> = ({ onNavigate }) => {
                   const hero = HEROES[index];
                   if (!hero) return <div key={col} className="hero-cell" />;
 
-                  const isBanned = bannedHeroes.includes(hero.name);
-                  const isSelected = selectedHero === hero.name;
+                  const isBanned = bannedHeroes.includes(hero.id);
+                  const isSelected = selectedHero === hero.id;
                   const canClick = !isBanned && phase === 'ban';
 
                   return (
@@ -170,7 +170,7 @@ const BanScreenPage: React.FC<BanScreenProps> = ({ onNavigate }) => {
                         isBanned ? 'banned' : '',
                         isSelected ? 'active-pick' : '',
                       ].filter(Boolean).join(' ')}
-                      onClick={() => canClick && handleSelectHero(hero.name)}
+                      onClick={() => canClick && handleSelectHero(hero.id)}
                       style={isSelected ? { borderColor: 'var(--color-ban-red)', backgroundColor: '#2a1520' } : undefined}
                     >
                       <img src={hero.image} alt={hero.name} title={hero.name} />
@@ -204,12 +204,12 @@ const BanScreenPage: React.FC<BanScreenProps> = ({ onNavigate }) => {
           <div style={{ height: '8vh' }} />
           {[0, 1, 2, 3, 4, 5].slice(0, playersPerTeam).map((i) => {
             const p = sapphireTeam[i];
-            const isCurrentTurn = draftState.currentTurnTeam === 'sapphire' && p && !p.locked;
+            const isCurrentTurn = draftState.currentTurnPlayerId === p?.steamId;
             return (
               <div key={i} className="player-row">
                 <div className={`player-avatar ${isCurrentTurn ? 'selected-ban' : ''}`}>
-                  {p?.hero && (
-                    <img src={HEROES.find(h => h.name === p.hero)?.image} alt="hero" />
+                  {p?.hero && HEROES.find(h => h.id === p.hero) && (
+                    <img src={HEROES.find(h => h.id === p.hero)?.image} alt="hero" />
                   )}
                 </div>
                 <span
