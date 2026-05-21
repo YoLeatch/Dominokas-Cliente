@@ -36,4 +36,5 @@ export const HEROES: HeroData[] = [
   { id: 'nano', name: 'Calico', image: '/img/nano_card_gloat_psd.png' },
   { id: 'necro', name: 'Graves', image: '/img/necro_card_gloat_psd.png' },
   { id: 'priest', name: 'Venator', image: '/img/priest_card_gloat_psd.png' },
+  { id: 'vampirebat', name: 'Mina', image: '/img/vampirebat_card_gloat_psd.png' },
 ];
