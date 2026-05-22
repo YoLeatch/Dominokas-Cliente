@@ -67,9 +67,9 @@ const MatchConfigPage: React.FC<Props> = ({ onNavigate }) => {
   const isServerRunning = isHost && isConnected;
 
   return (
-    <div className="screen" style={{ gap: '3vh' }}>
+    <div className="screen" style={{ gap: '3vh', justifyContent: 'flex-start', paddingTop: '80px', overflowY: 'auto' }}>
       <HeaderLogo />
-      <div className="config-card">
+      <div className="config-card" style={{ marginTop: '20px', marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2vh' }}>
           <div className="config-title" style={{ margin: 0 }}>⚙ CONFIGURAR <span>PARTIDA</span></div>
           <button 

@@ -82,7 +82,10 @@ const MatchCreatedPage: React.FC<Props> = ({ onNavigate }) => {
   const sapphireTeam = draftState?.sapphireTeam || [];
   const spectators = draftState?.spectators || [];
 
-  const totalConnected = amberTeam.length + sapphireTeam.length + spectators.length;
+  const activeAmberCount = amberTeam.filter(p => !p.steamId.startsWith('ABSENT_')).length;
+  const activeSapphireCount = sapphireTeam.filter(p => !p.steamId.startsWith('ABSENT_')).length;
+
+  const totalConnected = activeAmberCount + activeSapphireCount + spectators.length;
   const maxSlots = (config.playersPerTeam * 2) + config.maxSpectators;
 
   return (
@@ -216,17 +219,20 @@ const MatchCreatedPage: React.FC<Props> = ({ onNavigate }) => {
               <span className="slots-count">{amberTeam.length}/{config.playersPerTeam}</span>
             </div>
             <div className="slots-container">
-              {amberTeam.map((p, i) => (
-                <PlayerSlot
-                  key={`a-${i}`}
-                  name={p.name}
-                  connected={true}
-                  isCaptain={p.isCaptain}
-                  canManage={isHost}
-                  steamId={p.steamId}
-                  onSetCaptain={() => sendMessage({ type: 'SET_CAPTAIN', steamId: p.steamId, team: 'amber' })}
-                />
-              ))}
+              {amberTeam.map((p, i) => {
+                const isAbsent = p.steamId.startsWith('ABSENT_');
+                return (
+                  <PlayerSlot
+                    key={`a-${i}`}
+                    name={isAbsent ? "Ausente" : p.name}
+                    connected={true}
+                    isCaptain={p.isCaptain}
+                    canManage={isHost && !isAbsent}
+                    steamId={isAbsent ? undefined : p.steamId}
+                    onSetCaptain={() => sendMessage({ type: 'SET_CAPTAIN', steamId: p.steamId, team: 'amber' })}
+                  />
+                );
+              })}
               {Array.from({ length: config.playersPerTeam - amberTeam.length }).map((_, i) => (
                 <PlayerSlot key={`wa-${i}`} name="Aguardando..." connected={false} />
               ))}
@@ -239,17 +245,20 @@ const MatchCreatedPage: React.FC<Props> = ({ onNavigate }) => {
               <span className="slots-count">{sapphireTeam.length}/{config.playersPerTeam}</span>
             </div>
             <div className="slots-container">
-              {sapphireTeam.map((p, i) => (
-                <PlayerSlot
-                  key={`s-${i}`}
-                  name={p.name}
-                  connected={true}
-                  isCaptain={p.isCaptain}
-                  canManage={isHost}
-                  steamId={p.steamId}
-                  onSetCaptain={() => sendMessage({ type: 'SET_CAPTAIN', steamId: p.steamId, team: 'sapphire' })}
-                />
-              ))}
+              {sapphireTeam.map((p, i) => {
+                const isAbsent = p.steamId.startsWith('ABSENT_');
+                return (
+                  <PlayerSlot
+                    key={`s-${i}`}
+                    name={isAbsent ? "Ausente" : p.name}
+                    connected={true}
+                    isCaptain={p.isCaptain}
+                    canManage={isHost && !isAbsent}
+                    steamId={isAbsent ? undefined : p.steamId}
+                    onSetCaptain={() => sendMessage({ type: 'SET_CAPTAIN', steamId: p.steamId, team: 'sapphire' })}
+                  />
+                );
+              })}
               {Array.from({ length: config.playersPerTeam - sapphireTeam.length }).map((_, i) => (
                 <PlayerSlot key={`ws-${i}`} name="Aguardando..." connected={false} />
               ))}
@@ -275,10 +284,10 @@ const MatchCreatedPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
 
         <button
-          className={`btn-start ${amberTeam.length > 0 || sapphireTeam.length > 0 ? 'ready' : ''}`}
+          className={`btn-start ${activeAmberCount > 0 || activeSapphireCount > 0 ? 'ready' : ''}`}
           onClick={() => {
-            if (amberTeam.length === 0 && sapphireTeam.length === 0) {
-              alert('É necessário ter pelo menos 1 jogador em um dos times para iniciar.');
+            if (activeAmberCount === 0 && activeSapphireCount === 0) {
+              alert('É necessário ter pelo menos 1 jogador ativo em um dos times para iniciar.');
               return;
             }
             const actualSteamId = (user as any)?.steamId || user?.steam_id;

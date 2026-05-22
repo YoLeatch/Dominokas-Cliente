@@ -72,6 +72,28 @@ interface DraftContextType {
 
 const DraftContext = createContext<DraftContextType | null>(null);
 
+const populateAbsentSlots = (state: DraftState): DraftState => {
+  const playersPerTeam = state.config.playersPerTeam;
+  const fillTeam = (team: PlayerSlot[], side: 'AMBER' | 'SAPPHIRE'): PlayerSlot[] => {
+    const active = team.filter(p => !p.steamId.startsWith('ABSENT_') && !p.steamId.startsWith('SKIPPED_'));
+    const result = [...active];
+    for (let i = result.length; i < playersPerTeam; i++) {
+      result.push({
+        steamId: `ABSENT_${side}_${i}`,
+        name: "Ausente",
+        hero: null,
+        locked: false
+      });
+    }
+    return result;
+  };
+  return {
+    ...state,
+    amberTeam: fillTeam(state.amberTeam, 'AMBER'),
+    sapphireTeam: fillTeam(state.sapphireTeam, 'SAPPHIRE')
+  };
+};
+
 export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [draftState, setDraftState] = useState<DraftState>(INITIAL_STATE);
   const [isConnected, setIsConnected] = useState(false);
@@ -478,8 +500,16 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         stateChanged = true;
         // Remove do lobby se ainda não iniciou o draft
         if (currentState.phase === 'waiting') {
-          currentState.amberTeam = currentState.amberTeam.filter(p => p.steamId !== steamId);
-          currentState.sapphireTeam = currentState.sapphireTeam.filter(p => p.steamId !== steamId);
+          currentState.amberTeam = currentState.amberTeam.map((p, idx) => 
+            p.steamId === steamId 
+              ? { steamId: `ABSENT_AMBER_${idx}`, name: 'Ausente', hero: null, locked: false }
+              : p
+          );
+          currentState.sapphireTeam = currentState.sapphireTeam.map((p, idx) => 
+            p.steamId === steamId 
+              ? { steamId: `ABSENT_SAPPHIRE_${idx}`, name: 'Ausente', hero: null, locked: false }
+              : p
+          );
           currentState.spectators = currentState.spectators.filter(p => p.steamId !== steamId);
         } else if (currentState.phase === 'ban' || currentState.phase === 'pick') {
           // Se for no meio do draft, pausa o draft automaticamente para o host decidir
@@ -499,30 +529,59 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       stateChanged = true;
       const p = { ...msg.player };
       const roleName = (msg.requestedRole || 'spectator').toUpperCase();
-      emitLog(`Jogador conectado: ${p.name} (${roleName})`, 'success');
+      emitLog(`Tentativa de conexão / Conectado: ${p.name} (SteamID: ${p.steamId}) - Equipe: ${roleName} - Herói: ${p.hero || 'Nenhum'}`, 'success');
 
-      const newAmber = currentState.amberTeam.filter(x => x.steamId !== p.steamId);
-      const newSapphire = currentState.sapphireTeam.filter(x => x.steamId !== p.steamId);
-      const newSpectators = currentState.spectators.filter(x => x.steamId !== p.steamId);
+      // 1. Identify if player p.steamId is already in amberTeam or sapphireTeam.
+      // If yes, replace that old slot in-place with a dummy slot
+      currentState.amberTeam = currentState.amberTeam.map((item, idx) => 
+        item.steamId === p.steamId 
+          ? { steamId: `ABSENT_AMBER_${idx}`, name: "Ausente", hero: null, locked: false } 
+          : item
+      );
+      currentState.sapphireTeam = currentState.sapphireTeam.map((item, idx) => 
+        item.steamId === p.steamId 
+          ? { steamId: `ABSENT_SAPPHIRE_${idx}`, name: "Ausente", hero: null, locked: false } 
+          : item
+      );
+
+      // Filter them out of spectators
+      currentState.spectators = currentState.spectators.filter(x => x.steamId !== p.steamId);
 
       if (p.steamId === currentState.hostSteamId) p.isHost = true;
 
-      // Se modo capitão e não há capitão neste time ainda, este vira capitão automaticamente
-      if (currentState.config.captainMode) {
-        if (msg.requestedRole === 'amber' && !newAmber.some(x => x.isCaptain)) {
-          p.isCaptain = true;
-        } else if (msg.requestedRole === 'sapphire' && !newSapphire.some(x => x.isCaptain)) {
-          p.isCaptain = true;
+      // 2. Put them in the requested team
+      if (msg.requestedRole === 'amber') {
+        const absentIdx = currentState.amberTeam.findIndex(x => x.steamId.startsWith('ABSENT_'));
+        if (absentIdx !== -1) {
+          currentState.amberTeam[absentIdx] = p;
+        } else {
+          currentState.amberTeam.push(p);
         }
+      } else if (msg.requestedRole === 'sapphire') {
+        const absentIdx = currentState.sapphireTeam.findIndex(x => x.steamId.startsWith('ABSENT_'));
+        if (absentIdx !== -1) {
+          currentState.sapphireTeam[absentIdx] = p;
+        } else {
+          currentState.sapphireTeam.push(p);
+        }
+      } else {
+        currentState.spectators.push(p);
       }
 
-      if (msg.requestedRole === 'amber') newAmber.push(p);
-      else if (msg.requestedRole === 'sapphire') newSapphire.push(p);
-      else newSpectators.push(p);
+      // 3. Ensure at least one captain per team in captainMode if active players exist
+      if (currentState.config.captainMode) {
+        const activeAmber = currentState.amberTeam.filter(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_'));
+        if (activeAmber.length > 0 && !activeAmber.some(x => x.isCaptain)) {
+          const firstActiveIdx = currentState.amberTeam.findIndex(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_'));
+          if (firstActiveIdx !== -1) currentState.amberTeam[firstActiveIdx].isCaptain = true;
+        }
 
-      currentState.amberTeam = newAmber;
-      currentState.sapphireTeam = newSapphire;
-      currentState.spectators = newSpectators;
+        const activeSapphire = currentState.sapphireTeam.filter(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_'));
+        if (activeSapphire.length > 0 && !activeSapphire.some(x => x.isCaptain)) {
+          const firstActiveIdx = currentState.sapphireTeam.findIndex(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_'));
+          if (firstActiveIdx !== -1) currentState.sapphireTeam[firstActiveIdx].isCaptain = true;
+        }
+      }
     }
 
     else if (msg.type === 'SELECT_HERO' && hostMode) {
@@ -638,22 +697,8 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       currentState.amberTeam = currentState.amberTeam.filter(p => !p.steamId.startsWith('SKIPPED_') && !p.steamId.startsWith('ABSENT_'));
       currentState.sapphireTeam = currentState.sapphireTeam.filter(p => !p.steamId.startsWith('SKIPPED_') && !p.steamId.startsWith('ABSENT_'));
 
-      // Pre-povoa com slots "Ausente" até atingir o playersPerTeam
-      const fillTeam = (team: PlayerSlot[], side: 'AMBER' | 'SAPPHIRE') => {
-        const result = [...team];
-        for (let i = result.length; i < currentState.config.playersPerTeam; i++) {
-          result.push({
-            steamId: `ABSENT_${side}_${i}`,
-            name: "Ausente",
-            hero: null,
-            locked: false
-          });
-        }
-        return result;
-      };
-
-      currentState.amberTeam = fillTeam(currentState.amberTeam, 'AMBER');
-      currentState.sapphireTeam = fillTeam(currentState.sapphireTeam, 'SAPPHIRE');
+      // Call populateAbsentSlots to pre-populate missing slots
+      currentState = populateAbsentSlots(currentState);
 
       advanceDraftPhase(currentState);
     }
@@ -745,8 +790,15 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     else if (msg.type === 'END_MATCH' && hostMode) {
       stateChanged = true;
       currentState.phase = 'waiting';
+      
+      // Clear heroes and locks
       currentState.amberTeam.forEach(p => { p.hero = null; p.locked = false; });
       currentState.sapphireTeam.forEach(p => { p.hero = null; p.locked = false; });
+      
+      // Filter out any SKIPPED_ or ABSENT_ slots so only real connected players remain in the lobby (empty slots show "Aguardando...")
+      currentState.amberTeam = currentState.amberTeam.filter(p => !p.steamId.startsWith('SKIPPED_') && !p.steamId.startsWith('ABSENT_'));
+      currentState.sapphireTeam = currentState.sapphireTeam.filter(p => !p.steamId.startsWith('SKIPPED_') && !p.steamId.startsWith('ABSENT_'));
+
       currentState.bannedHeroes = [];
       currentState.currentTurnTeam = null;
       currentState.currentTurnPlayerId = null;

@@ -98,6 +98,18 @@ export const MatchInProgressPage: React.FC<Props> = ({ onNavigate }) => {
     }
   };
 
+  const handleForceStart = async () => {
+    if (window.confirm('Tem certeza de que deseja forçar o início da partida? Todos os jogadores ausentes serão ignorados.')) {
+      try {
+        await invoke('send_server_command', { command: 'start_force' });
+        alert('Comando de início forçado enviado ao servidor dedicado.');
+      } catch (err) {
+        console.error('Erro ao forçar início:', err);
+        alert('Erro ao forçar início: ' + err);
+      }
+    }
+  };
+
   const handleSendWorldMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatText.trim()) return;
@@ -218,6 +230,9 @@ export const MatchInProgressPage: React.FC<Props> = ({ onNavigate }) => {
                       </button>
                       <button className="host-btn-action" onClick={handleResume}>
                         RETOMAR PARTIDA
+                      </button>
+                      <button className="host-btn-action" onClick={handleForceStart}>
+                        FORÇAR INÍCIO
                       </button>
                     </div>
 
