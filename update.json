@@ -4,8 +4,8 @@
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSk9YRHljd1JxekJFakpLdmpLM2swUGJaWkFzdDdHQmthRXVPUnlLVXBhQ2wxZFFGOUZ6Z2QxckxjOVRmb1luMHVsTEZZcUdVdlBZUzJMUG5rYS9rUXdVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NDIzMTAwCWZpbGU6RG9taW5va2FzXzAuMS44X3g2NF9lbi1VUy5tc2kKNDJva0VtbTlXKzhLR2JTdVNQYmtJMmNYNWwzbzFINXMvaTNHdkFtZkloWjVwUlBuQTBhb0crcUJUd3JiMUREYmdEaFo5eHZJcWhCL3luZDIxVmpZRFE9PQo=",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.8_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSk9jcDA0ckZtRisxVHlCcU1xNUFBRk9jdXU4UDBXcGloSEkrUlpyUlc3SWtNTFJaaDV0TldEMzhKNWEvdGV6YlpzN0FiVWdMZkNxRTM2bjdEVEVGa3drPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NDIzMTAwCWZpbGU6RG9taW5va2FzXzAuMS44X3g2NC1zZXR1cC5leGUKSVQzVXMyUFZReFoxRi9xMTlNYWRiOW1GbFhCZXpwWisxRlpSLzhNTW9jS2MzSURhOUhFV2VINFk4Z3V5ZDF2TmwzSGhQNzFhRW5GeVhSNFl4azJwQnc9PQo=",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.8_x64-setup.exe"
     }
   }
 }
