@@ -39,7 +39,7 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
 
   const isCaptainMode = config?.captainMode || false;
   const isMyTurn = draftState?.currentTurnTeam === myTeam;
-  const canIAction = isCaptainMode ? (mySlot?.isCaptain && isMyTurn) : (isMyTurn && (phase === 'ban' || !mySlot?.locked));
+  const canIAction = myTeam !== null && (isCaptainMode ? (mySlot?.isCaptain && isMyTurn) : (isMyTurn && (phase === 'ban' || !mySlot?.locked)));
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -246,61 +246,55 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          {/* Hero Grid — mesma estrutura [6 rows × 5 cols] */}
-          <div className="hero-grid-container" style={{ display: 'flex', flexDirection: 'column', gap: '1vh' }}>
-            {[0, 1, 2, 3, 4, 5].map((row) => (
-              <div key={row} className="hero-grid">
-                {[0, 1, 2, 3, 4].map((col) => {
-                  const index = row * 5 + col;
-                  const hero = HEROES[index];
-                  if (!hero) return <div key={col} className="hero-cell" />;
-
-                  const isBanned = bannedHeroes.includes(hero.id);
-                  const pickedByAmber = amberTeam.find(p => p.hero === hero.id && p.locked);
-                  const pickedBySapphire = sapphireTeam.find(p => p.hero === hero.id && p.locked);
-                  const isPicked = !!(pickedByAmber || pickedBySapphire);
-                  const isSelected = selectedHero === hero.id;
-                  const isPickedByMyTeam = !!(myTeam === 'amber' ? pickedByAmber : pickedBySapphire);
-                  
-                  let canClick = false;
-                  if (phase === 'ban') {
-                    canClick = !isBanned;
-                  } else if (phase === 'pick') {
-                    if (config?.duplicateHeroes) {
-                      canClick = !isBanned && !isPickedByMyTeam;
-                    } else {
-                      canClick = !isBanned && !isPicked;
-                    }
+          {/* Hero Grid — Grade Rolável Dinâmica para todos os Heróis */}
+          <div className="hero-grid-scrollable-container">
+            <div className="hero-grid">
+              {HEROES.map((hero) => {
+                const isBanned = bannedHeroes.includes(hero.id);
+                const pickedByAmber = amberTeam.find(p => p.hero === hero.id && p.locked);
+                const pickedBySapphire = sapphireTeam.find(p => p.hero === hero.id && p.locked);
+                const isPicked = !!(pickedByAmber || pickedBySapphire);
+                const isSelected = selectedHero === hero.id;
+                const isPickedByMyTeam = !!(myTeam === 'amber' ? pickedByAmber : pickedBySapphire);
+                
+                let canClick = false;
+                if (phase === 'ban') {
+                  canClick = !isBanned;
+                } else if (phase === 'pick') {
+                  if (config?.duplicateHeroes) {
+                    canClick = !isBanned && !isPickedByMyTeam;
+                  } else {
+                    canClick = !isBanned && !isPicked;
                   }
+                }
 
-                  // Se o draft acabou, nada é clicável
-                  if (phase === 'complete') canClick = false;
+                // Se o draft acabou, nada é clicável
+                if (phase === 'complete') canClick = false;
 
-                  return (
-                    <div
-                      key={col}
-                      className={[
-                        'hero-cell',
-                        isBanned ? 'banned' : '',
-                        isPicked ? 'picked' : '',
-                        pickedByAmber ? 'amber' : '',
-                        pickedBySapphire ? 'sapphire' : '',
-                        isSelected ? 'active-pick' : '',
-                      ].filter(Boolean).join(' ')}
-                      onClick={() => canClick && handleSelectHero(hero.id, hero.name)}
-                      style={canClick && isPicked ? { cursor: 'pointer' } : {}}
-                    >
-                      <img 
-                        src={hero.image} 
-                        alt={hero.name} 
-                        title={hero.name} 
-                        style={canClick && isPicked ? { filter: 'none', opacity: 1 } : {}}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
+                return (
+                  <div
+                    key={hero.id}
+                    className={[
+                      'hero-cell',
+                      isBanned ? 'banned' : '',
+                      isPicked ? 'picked' : '',
+                      pickedByAmber ? 'amber' : '',
+                      pickedBySapphire ? 'sapphire' : '',
+                      isSelected ? 'active-pick' : '',
+                    ].filter(Boolean).join(' ')}
+                    onClick={() => canClick && handleSelectHero(hero.id, hero.name)}
+                    style={canClick && isPicked ? { cursor: 'pointer' } : {}}
+                  >
+                    <img 
+                      src={hero.image} 
+                      alt={hero.name} 
+                      title={hero.name} 
+                      style={canClick && isPicked ? { filter: 'none', opacity: 1 } : {}}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Label + Botão — idêntico ao BanScreenPage */}

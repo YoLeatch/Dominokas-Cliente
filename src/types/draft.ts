@@ -60,4 +60,5 @@ export type WSMessage =
   | { type: 'START_MATCH'; steamId?: string }
   | { type: 'END_MATCH' }
   | { type: 'WORLD_MESSAGE'; text: string }
-  | { type: 'HEARTBEAT' };
+  | { type: 'HEARTBEAT' }
+  | { type: 'PLAYER_DISCONNECTED'; steamId: string; name: string };

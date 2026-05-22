@@ -49,6 +49,30 @@
 
 .player-name-side { color: var(--text-secondary); font-size: 14px; font-weight: 600; letter-spacing: 0.3px; white-space: nowrap; }
 
+.hero-grid-scrollable-container {
+  max-height: 59vh;
+  overflow-y: auto;
+  padding-right: 8px;
+  width: 100%;
+}
+
+/* Estilização Premium da Barra de Rolagem (Dourada) */
+.hero-grid-scrollable-container::-webkit-scrollbar {
+  width: 6px;
+}
+.hero-grid-scrollable-container::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.3);
+  border-radius: 4px;
+}
+.hero-grid-scrollable-container::-webkit-scrollbar-thumb {
+  background: var(--color-gold, #f0b90b);
+  border-radius: 4px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+.hero-grid-scrollable-container::-webkit-scrollbar-thumb:hover {
+  background: #ffcc00;
+}
+
 /* ── CENTRO ── */
 .center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1vh; }
 

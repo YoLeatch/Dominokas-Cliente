@@ -179,6 +179,7 @@ const EnterMatchPage: React.FC<Props> = ({ onNavigate }) => {
           maxLength={500}
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
+          onKeyDown={(e) => e.key === 'Enter' && handleJoinRoom()}
           spellCheck={false}
           disabled={isJoining}
           style={{ width: '100%', maxWidth: '500px' }}
