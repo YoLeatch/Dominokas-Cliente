@@ -86,6 +86,8 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const hostStateRef = useRef<DraftState>(INITIAL_STATE);
   const lastRequestedRoleRef = useRef<HostRole>('amber');
   const hasSentInitialJoin = useRef(false);
+  const isExplicitDisconnectRef = useRef(false);
+  const reconnectAttemptsRef = useRef(0);
 
   const [user, setUser] = useState<{ name: string, steam_id: string } | null>(null);
 
@@ -351,6 +353,7 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (wsRef.current) wsRef.current.close();
 
       setIsHost(host);
+      isExplicitDisconnectRef.current = false;
       
       // Salva os dados de conexão no sessionStorage
       sessionStorage.setItem('dominokas_ws_ip', ip);
@@ -365,6 +368,7 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setIsConnected(true);
         setSocket(ws);
         wsRef.current = ws;
+        reconnectAttemptsRef.current = 0; // Reseta as tentativas ao conectar
 
         if (user) {
           const actualSteamId = user.steam_id;
@@ -402,6 +406,28 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         wsRef.current = null;
         hasSentInitialJoin.current = false;
         console.log("[DraftContext] WebSocket Fechado.");
+
+        // Auto-reconexão automática em quedas involuntárias
+        if (!isExplicitDisconnectRef.current) {
+          const maxAttempts = 5;
+          if (reconnectAttemptsRef.current < maxAttempts) {
+            reconnectAttemptsRef.current += 1;
+            const attempt = reconnectAttemptsRef.current;
+            emitLog(`Conexão perdida com o servidor. Tentando reconectar (Tentativa ${attempt}/${maxAttempts})...`, 'warn');
+            
+            setTimeout(() => {
+              if (!wsRef.current && !isExplicitDisconnectRef.current) {
+                connectToRoom(ip, host, role).then(() => {
+                  emitLog('Reconectado com sucesso ao servidor do Draft!', 'success');
+                }).catch((err) => {
+                  console.warn(`[DraftContext] Tentativa de reconexão ${attempt} falhou:`, err);
+                });
+              }
+            }, 3000);
+          } else {
+            emitLog('Não foi possível reconectar automaticamente após 5 tentativas. Conecte-se manualmente.', 'error');
+          }
+        }
       };
 
       wsRef.current = ws;
@@ -442,6 +468,31 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const actualSteamId = user?.steam_id;
       if (msg.state.hostSteamId === actualSteamId) setIsHost(true);
       return;
+    }
+
+    if (msg.type === 'PLAYER_DISCONNECTED') {
+      const { steamId, name } = msg;
+      emitLog(`Conexão perdida com o jogador: ${name}`, 'error');
+      
+      if (hostMode) {
+        stateChanged = true;
+        // Remove do lobby se ainda não iniciou o draft
+        if (currentState.phase === 'waiting') {
+          currentState.amberTeam = currentState.amberTeam.filter(p => p.steamId !== steamId);
+          currentState.sapphireTeam = currentState.sapphireTeam.filter(p => p.steamId !== steamId);
+          currentState.spectators = currentState.spectators.filter(p => p.steamId !== steamId);
+        } else if (currentState.phase === 'ban' || currentState.phase === 'pick') {
+          // Se for no meio do draft, pausa o draft automaticamente para o host decidir
+          if (!currentState.isPaused) {
+            currentState.isPaused = true;
+            emitLog(`DRAFT PAUSADO AUTOMATICAMENTE: Jogador ${name} desconectou.`, 'warn');
+            
+            if (isGameServerRunning) {
+              invoke('send_server_command', { command: 'dominokas_pause' }).catch(console.error);
+            }
+          }
+        }
+      }
     }
 
     if (msg.type === 'JOIN_ROOM' && hostMode) {
@@ -806,6 +857,8 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const disconnect = () => {
+    isExplicitDisconnectRef.current = true;
+    reconnectAttemptsRef.current = 0;
     if (wsRef.current) wsRef.current.close();
     setDraftState(INITIAL_STATE);
     setIsConnected(false);

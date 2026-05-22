@@ -1,11 +1,11 @@
 {
-  "version": "0.1.4",
-  "notes": "Nova versão do Dominokas Launcher com suporte a grade rolável dinâmica para seleção de todos os 40 heróis nas telas de Draft e Ban de forma premium!",
+  "version": "0.1.6",
+  "notes": "Dominokas Launcher v0.1.6 com correções de auditoria pós-remediação, remoção de rotas redundantes e melhorias gerais de estabilidade!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkFwNS93dmlpM05FQzE0eTdTNk9SM3VMdldFVURjTzBvdVVVaTh0N2ZrQ0c5akZiTXN1a2xBSkVVMk9qV2U4My9Lek5JS3FETng2N3FTWk9JOWN0amc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5Mzk1NTM3CWZpbGU6RG9taW5va2FzXzAuMS40X3g2NF9lbi1VUy5tc2kKRnV0cVoxMWFLSGhIb01OSG9EZlF2c0E3VG1YbHl4eVM1dTU2enNYelFRMGFSdVU4Y3pubkhBZ0dPeS9XbW9IOVQyem4rdlhLejFxbHkrZTBtaGhTQWc9PQo=",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.4_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkozTnFnU2J2RE41QWJ5ME9rdGc2eVV5Z3FkdDBjVG1YRFNmNlpzT2xtYVBhc1dTSlcyem4ycUFUSmNneDRIejM5dm9ZM0FqZDhRNC9QSTJobjVZb0FzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NDEyNjU3CWZpbGU6RG9taW5va2FzXzAuMS42X3g2NF9lbi1VUy5tc2kKV2FYT3l1bisxMUtXZEJYN3FVdlduYnAvcWtHa3F5bmpVeWp6QVB1VUl1RG9WMWU4cWZpT1pRUkpwOHE1WCtBYW00WEtqN1RHSFRsVjdhVVNCbHNGQUE9PQo=",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.6_x64_en-US.msi"
     }
   }
 }

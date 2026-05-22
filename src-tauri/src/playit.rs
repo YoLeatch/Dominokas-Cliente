@@ -14,6 +14,17 @@ fn get_process_guard() -> &'static Mutex<Option<Child>> {
 const TUNNEL_TIMEOUT_SECS: u64 = 45;
 
 #[command]
+pub fn stop_tunnel() -> Result<(), String> {
+    if let Ok(mut guard) = get_process_guard().lock() {
+        if let Some(mut child) = guard.take() {
+            let _ = child.kill();
+            println!("[Playit] Tunel encerrado com sucesso.");
+        }
+    }
+    Ok(())
+}
+
+#[command]
 pub async fn start_tunnel(app: AppHandle) -> Result<String, String> {
     tokio::task::spawn_blocking(move || try_start_tunnel(app))
         .await

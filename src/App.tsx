@@ -8,7 +8,6 @@ import MatchConfigPage from './pages/MatchConfigPage';
 import MatchCreatedPage from './pages/MatchCreatedPage';
 import DraftScreenPage from './pages/DraftScreenPage';
 import PlayerWaitingPage from './pages/PlayerWaitingPage';
-import BanScreenPage from './pages/BanScreenPage';
 import MatchInProgressPage from './pages/MatchInProgressPage';
 import ServerConsolePage from './pages/ServerConsolePage';
 import SettingsPage from './pages/SettingsPage';
@@ -23,7 +22,6 @@ export type Page =
   | 'match-config'
   | 'match-created'
   | 'player-waiting'
-  | 'ban-screen'
   | 'draft-screen'
   | 'match-in-progress'
   | 'server-console'
@@ -88,7 +86,6 @@ function App() {
       case 'match-config': return <MatchConfigPage onNavigate={setCurrentPage as any} />;
       case 'match-created': return <MatchCreatedPage onNavigate={setCurrentPage as any} />;
       case 'player-waiting': return <PlayerWaitingPage onNavigate={setCurrentPage as any} />;
-      case 'ban-screen': return <BanScreenPage onNavigate={setCurrentPage as any} />;
       case 'draft-screen': return <DraftScreenPage onNavigate={setCurrentPage as any} />;
       case 'match-in-progress': return <MatchInProgressPage onNavigate={setCurrentPage as any} />;
       case 'server-console': return <ServerConsolePage onNavigate={setCurrentPage as any} />;

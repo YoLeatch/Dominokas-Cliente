@@ -39,7 +39,7 @@ export const DraftScreenPage: React.FC<DraftScreenProps> = ({ onNavigate }) => {
 
   const isCaptainMode = config?.captainMode || false;
   const isMyTurn = draftState?.currentTurnTeam === myTeam;
-  const canIAction = isCaptainMode ? (mySlot?.isCaptain && isMyTurn) : (isMyTurn && (phase === 'ban' || !mySlot?.locked));
+  const canIAction = myTeam !== null && (isCaptainMode ? (mySlot?.isCaptain && isMyTurn) : (isMyTurn && (phase === 'ban' || !mySlot?.locked)));
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);

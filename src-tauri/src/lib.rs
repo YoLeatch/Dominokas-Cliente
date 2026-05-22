@@ -115,6 +115,7 @@ pub fn run() {
             steam::get_steam_user,
             steam::get_steam_avatar,
             playit::start_tunnel,
+            playit::stop_tunnel,
             relay::start_relay_server,
             draft::start_draft_server,
             save_last_address,
@@ -214,6 +215,13 @@ pub fn run() {
                 }
             }
         })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(|_app_handle, event| {
+            if let tauri::RunEvent::Exit = event {
+                println!("[lib] App exiting. Cleaning up processes...");
+                let _ = connect::stop_deadlock_server();
+                let _ = playit::stop_tunnel();
+            }
+        });
 }
