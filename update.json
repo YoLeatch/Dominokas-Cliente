@@ -1,11 +1,11 @@
 {
-  "version": "0.1.9",
-  "notes": "Dominokas Launcher v0.1.9 com auto-skip de bans e picks para times vazios no draft, e redirecionamento de 100% dos logs do servidor dedicado para o console do launcher!",
+  "version": "0.1.10",
+  "notes": "Dominokas Launcher v0.1.10 com correções estritas no dicionário de itens do GSI (sem rastreio inteligente / busca fuzzy errática) e redirecionamento de logs de console do servidor!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkl5b1ZIWnB6VDYwUFR2MnBiWDdqQnBIQ0NYMW5JanBRNUZCVzdDaHUzVEVITUIycDlFTCsxWnB4MXZsem5KWmhkWVV2cXZrbEhTdFZlaUZVaVdneHd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMjE2Nzg5CWZpbGU6RG9taW5va2FzXzAuMS45X3g2NC1zZXR1cC5leGUKenRQTExxejQyRVBVMHNjaTB3OHNhcTVTdU5xNXBmelFGUXhIbElja2dGWFBrZFZoZjgwUktpRm92bk5kNy9OSVRuVjVQQ21Rd3hzbUlSOHBpMDZEQlE9PQo=",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.9_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSk1PQmYyTmE3cnFEZkxwdFBoYXZJbmRrMzlRd3p6T2RnUDZSK1ZzWHYvTTdXVVFHc1pCVi9zQ0REUFN5b203OXVSbjdQOUVWZEdlNDFjNGtvZjJOQUEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMjE4NDIxCWZpbGU6RG9taW5va2FzXzAuMS4xMF94NjQtc2V0dXAuZXhlCllsVmtsSjFHTVNmV1hiRWlXNjBHVW5uNEFFc1p6Ym4wM3l5NkhoRG1NNEpXUGQwbzhCbGYyV1MwWFFQaFJPR0VscU1JbytqSXBDa3FuQ1llR0YxckFnPT0K",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.10_x64-setup.exe"
     }
   }
 }
