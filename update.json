@@ -1,11 +1,11 @@
 {
-  "version": "0.1.8",
-  "notes": "Dominokas Launcher v0.1.8 com persistência de slots no lobby, botão de início forçado, logs verbosos no servidor dedicado e ajustes visuais premium!",
+  "version": "0.1.9",
+  "notes": "Dominokas Launcher v0.1.9 com auto-skip de bans e picks para times vazios no draft, e redirecionamento de 100% dos logs do servidor dedicado para o console do launcher!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSk9jcDA0ckZtRisxVHlCcU1xNUFBRk9jdXU4UDBXcGloSEkrUlpyUlc3SWtNTFJaaDV0TldEMzhKNWEvdGV6YlpzN0FiVWdMZkNxRTM2bjdEVEVGa3drPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NDIzMTAwCWZpbGU6RG9taW5va2FzXzAuMS44X3g2NC1zZXR1cC5leGUKSVQzVXMyUFZReFoxRi9xMTlNYWRiOW1GbFhCZXpwWisxRlpSLzhNTW9jS2MzSURhOUhFV2VINFk4Z3V5ZDF2TmwzSGhQNzFhRW5GeVhSNFl4azJwQnc9PQo=",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.8_x64-setup.exe"
+      "signature": "",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.9_x64-setup.exe"
     }
   }
 }

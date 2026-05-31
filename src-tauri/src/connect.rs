@@ -373,11 +373,8 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
         for line in reader.lines() {
             match line {
                 Ok(line_str) => {
-                    // Filtra spam recorrente do motor Source 2 quando rodando sem janela de console
-                    if !line_str.contains("CTextConsoleWin::GetLine") && !line_str.contains("!GetNumberOfConsoleInputEvents") {
-                        if app_clone1.emit("deadlock-server-log", line_str).is_err() {
-                            break;
-                        }
+                    if app_clone1.emit("deadlock-server-log", line_str).is_err() {
+                        break;
                     }
                 }
                 Err(_) => break,
@@ -391,11 +388,8 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
         for line in reader.lines() {
             match line {
                 Ok(line_str) => {
-                    // Filtra spam recorrente do motor Source 2 também no stderr
-                    if !line_str.contains("CTextConsoleWin::GetLine") && !line_str.contains("!GetNumberOfConsoleInputEvents") {
-                        if app_clone2.emit("deadlock-server-log", format!("ERROR: {}", line_str)).is_err() {
-                            break;
-                        }
+                    if app_clone2.emit("deadlock-server-log", format!("ERROR: {}", line_str)).is_err() {
+                        break;
                     }
                 }
                 Err(_) => break,

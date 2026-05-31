@@ -842,11 +842,18 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           turnIndex++;
           continue;
         } else {
+          const realPlayers = team.filter(p => !p.steamId.startsWith('ABSENT_'));
+          if (realPlayers.length === 0) {
+            // Instantly skip ban if the team has no real players
+            state.bannedHeroes.push(`SKIPPED_BAN_${turnIndex}`);
+            turnIndex++;
+            continue;
+          }
+
           state.phase = 'ban';
           state.currentTurnTeam = nextTurn.team;
 
           // Define o Ator: Capitão -> Primeiro Jogador Real -> Host
-          const realPlayers = team.filter(p => !p.steamId.startsWith('ABSENT_'));
           const captain = realPlayers.find(p => p.isCaptain);
           state.currentTurnPlayerId = captain ? captain.steamId : (realPlayers[0]?.steamId || state.hostSteamId);
 
