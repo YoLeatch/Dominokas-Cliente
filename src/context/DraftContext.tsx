@@ -511,6 +511,21 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               : p
           );
           currentState.spectators = currentState.spectators.filter(p => p.steamId !== steamId);
+
+          // Calcula jogadores restantes e notifica console + chat do jogo
+          const playersPerTeam = currentState.config.playersPerTeam;
+          const connectedAmber = currentState.amberTeam.filter(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_')).length;
+          const connectedSapphire = currentState.sapphireTeam.filter(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_')).length;
+          const expectedPlayers = playersPerTeam * 2;
+          const totalConnected = connectedAmber + connectedSapphire;
+          const missingPlayers = Math.max(0, expectedPlayers - totalConnected);
+
+          emitLog(`[Lobby] Jogador ${name} desconectou. Faltam ${missingPlayers} jogadores para completar (${totalConnected}/${expectedPlayers}).`, 'warn');
+
+          if (isGameServerRunning) {
+            const sayCmd = `say "[Dominokas] Jogador ${name} se desconectou! Faltam ${missingPlayers} jogadores para iniciar."`;
+            invoke('send_server_command', { command: sayCmd }).catch(console.error);
+          }
         } else if (currentState.phase === 'ban' || currentState.phase === 'pick') {
           // Se for no meio do draft, pausa o draft automaticamente para o host decidir
           if (!currentState.isPaused) {
@@ -581,6 +596,27 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           const firstActiveIdx = currentState.sapphireTeam.findIndex(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_'));
           if (firstActiveIdx !== -1) currentState.sapphireTeam[firstActiveIdx].isCaptain = true;
         }
+      }
+
+      // 4. Calcula jogadores restantes e notifica console + chat do jogo
+      const playersPerTeam = currentState.config.playersPerTeam;
+      const connectedAmber = currentState.amberTeam.filter(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_')).length;
+      const connectedSapphire = currentState.sapphireTeam.filter(x => !x.steamId.startsWith('ABSENT_') && !x.steamId.startsWith('SKIPPED_')).length;
+      const expectedPlayers = playersPerTeam * 2;
+      const totalConnected = connectedAmber + connectedSapphire;
+      const missingPlayers = Math.max(0, expectedPlayers - totalConnected);
+
+      if (missingPlayers > 0) {
+        emitLog(`[Lobby] Jogador ${p.name} conectado. Faltam ${missingPlayers} jogadores para completar (${totalConnected}/${expectedPlayers}).`, 'info');
+      } else {
+        emitLog(`[Lobby] Jogador ${p.name} conectado. Todos os ${expectedPlayers} jogadores estão conectados!`, 'success');
+      }
+
+      if (isGameServerRunning && (msg.requestedRole === 'amber' || msg.requestedRole === 'sapphire')) {
+        const sayCmd = missingPlayers > 0
+          ? `say "[Dominokas] Jogador ${p.name} se conectou! Faltam ${missingPlayers} jogadores para iniciar."`
+          : `say "[Dominokas] Jogador ${p.name} se conectou! Todos os jogadores estao prontos para iniciar!"`;
+        invoke('send_server_command', { command: sayCmd }).catch(console.error);
       }
     }
 

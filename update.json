@@ -1,11 +1,11 @@
 {
-  "version": "0.1.12",
-  "notes": "Dominokas Launcher v0.1.12 com filtro inteligente de spams no console do servidor (GetLine/GetNumberOfConsoleInputEvents ignorados) mantendo 100% dos logs de plugins!",
+  "version": "0.1.13",
+  "notes": "Dominokas Launcher v0.1.13 com notificações interativas em jogo (say chat) informando conexões, desconexões e quantidade de jogadores faltantes no lobby!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkN2Q1JCaE5QQWVmZTlINGFPeUE3UVJmVm1SampJWnpjN3dTZGc2TzlMZGxQTVRmWElJNjNHbUpJYjhiL2cvWmFoY29nOVh1ck5tNzc1dVFCS3lLT1FRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMjIwNjQ4CWZpbGU6RG9taW5va2FzXzAuMS4xMl94NjQtc2V0dXAuZXhlClZMK1ZCZ1djcitoanNBUHZpZ1lnc0J4dnRaQXJ2SXV5T1ZtRkVKUzNBOGdWanFMaTlTOUh3SWdSNjF3TWtQTmV3emx2S2t1MUF5SjF2aHFpT2ZtcUNRPT0K",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.12_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkVHclU3TXFUTDI5QnAxQjM4SjhLbEV3N0o0bjRMQjZ6c3FsYzU3cjlyNXp3dkJnMDRLVEVPMlJqa29YTjlCcTZPSWQ5MXJ6OEo1RFZjRmVFZnhBa3dJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMjIyMTIxCWZpbGU6RG9taW5va2FzXzAuMS4xM194NjQtc2V0dXAuZXhlCmZYS0ZBTDJjVWpjZUkxZzgwWmROVkxtekZzN202UjRoRFB2R0g1Y0IyYllDWkEzbS92SFl1Z1VUc1ppTVE2QTlYdkUwN0g4R1pKK3ppWmdpeFRDZkNnPT0K",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.13_x64-setup.exe"
     }
   }
 }
