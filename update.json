@@ -4,7 +4,7 @@
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkl5b1ZIWnB6VDYwUFR2MnBiWDdqQnBIQ0NYMW5JanBRNUZCVzdDaHUzVEVITUIycDlFTCsxWnB4MXZsem5KWmhkWVV2cXZrbEhTdFZlaUZVaVdneHd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMjE2Nzg5CWZpbGU6RG9taW5va2FzXzAuMS45X3g2NC1zZXR1cC5leGUKenRQTExxejQyRVBVMHNjaTB3OHNhcTVTdU5xNXBmelFGUXhIbElja2dGWFBrZFZoZjgwUktpRm92bk5kNy9OSVRuVjVQQ21Rd3hzbUlSOHBpMDZEQlE9PQo=",
       "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.9_x64-setup.exe"
     }
   }
