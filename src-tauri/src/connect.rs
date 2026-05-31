@@ -416,8 +416,11 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
                     Ok(_) => {
                         let trimmed = line_buf.trim_end();
                         if !trimmed.is_empty() {
-                            if app_clone1.emit("deadlock-server-log", trimmed.to_string()).is_err() {
-                                break;
+                            let lower = trimmed.to_lowercase();
+                            if !lower.contains("ctextconsolewin::getline") && !lower.contains("getnumberofconsoleinputevents") {
+                                if app_clone1.emit("deadlock-server-log", trimmed.to_string()).is_err() {
+                                    break;
+                                }
                             }
                         }
                         line_buf.clear();
@@ -437,8 +440,14 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
         for line in reader.lines() {
             match line {
                 Ok(line_str) => {
-                    if app_clone2.emit("deadlock-server-log", format!("ERROR: {}", line_str)).is_err() {
-                        break;
+                    let trimmed = line_str.trim();
+                    if !trimmed.is_empty() {
+                        let lower = trimmed.to_lowercase();
+                        if !lower.contains("ctextconsolewin::getline") && !lower.contains("getnumberofconsoleinputevents") {
+                            if app_clone2.emit("deadlock-server-log", format!("ERROR: {}", trimmed)).is_err() {
+                                break;
+                            }
+                        }
                     }
                 }
                 Err(_) => break,

@@ -1,11 +1,11 @@
 {
-  "version": "0.1.11",
-  "notes": "Dominokas Launcher v0.1.11 com correção de buffering de logs do console dedicado (logs em tempo real sem congelamento!) e mapeamento estrito de itens GSI!",
+  "version": "0.1.12",
+  "notes": "Dominokas Launcher v0.1.12 com filtro inteligente de spams no console do servidor (GetLine/GetNumberOfConsoleInputEvents ignorados) mantendo 100% dos logs de plugins!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkMwVkNkKzFiWmZXeFFENmhSYWozNUJ0TmNNeTUyTzN4U0tyTHp5ZG5XSm9GR2o1RWpaM1RaOHlYdVNDZW5admY1L2NOSzJFQm5OSHdCQlp2bFBpOHdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMjE5MDU1CWZpbGU6RG9taW5va2FzXzAuMS4xMV94NjQtc2V0dXAuZXhlCkZhWjJIWi81OG1VRWQ3Q1oya2FMM2ZMMDJLcmxVbDJLa1F4QUtaZ0NaZ2ZBNDhxeUFSbXpEdXlnM0krR2RmUzArMzVvWjlIa3pGKy90QUlBRGJZZUNBPT0K",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.11_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkN2Q1JCaE5QQWVmZTlINGFPeUE3UVJmVm1SampJWnpjN3dTZGc2TzlMZGxQTVRmWElJNjNHbUpJYjhiL2cvWmFoY29nOVh1ck5tNzc1dVFCS3lLT1FRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMjIwNjQ4CWZpbGU6RG9taW5va2FzXzAuMS4xMl94NjQtc2V0dXAuZXhlClZMK1ZCZ1djcitoanNBUHZpZ1lnc0J4dnRaQXJ2SXV5T1ZtRkVKUzNBOGdWanFMaTlTOUh3SWdSNjF3TWtQTmV3emx2S2t1MUF5SjF2aHFpT2ZtcUNRPT0K",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.12_x64-setup.exe"
     }
   }
 }
