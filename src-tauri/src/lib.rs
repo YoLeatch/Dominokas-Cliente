@@ -106,6 +106,7 @@ pub fn run() {
             connect::reset_game_dir,
             connect::start_deadlock_server,
             connect::stop_deadlock_server,
+            connect::check_game_server_running,
             connect::send_server_command,
             connect::save_match_state,
             connect::connect_to_match,

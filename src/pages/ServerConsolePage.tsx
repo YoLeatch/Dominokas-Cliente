@@ -6,7 +6,7 @@ import '../styles/ServerConsole.css';
 interface LogEntry {
   time: string;
   text: string;
-  type: 'info' | 'success' | 'warn' | 'error' | 'system' | 'cmd';
+  type: 'info' | 'success' | 'warn' | 'error' | 'system' | 'cmd' | 'plugin';
 }
 
 interface Props {

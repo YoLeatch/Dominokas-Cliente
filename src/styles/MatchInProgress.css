@@ -492,3 +492,7 @@
 .console-log-line.success {
   color: var(--color-green);
 }
+
+.console-log-line.plugin {
+  color: #c084fc;
+}

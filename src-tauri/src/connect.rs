@@ -271,6 +271,19 @@ pub fn send_server_command(command: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+pub fn check_game_server_running() -> bool {
+    let mut proc_lock = SERVER_PROCESS.lock().unwrap();
+    if let Some(child) = proc_lock.as_mut() {
+        match child.try_wait() {
+            Ok(None) => true, // Processo ainda rodando
+            _ => false, // Processo terminou ou deu erro
+        }
+    } else {
+        false
+    }
+}
+
+#[tauri::command]
 pub fn stop_deadlock_server() -> Result<(), String> {
     let mut proc_lock = SERVER_PROCESS.lock().unwrap();
     if let Some(mut child) = proc_lock.take() {

@@ -70,6 +70,7 @@
 .log-line.error { color: var(--color-red); }
 .log-line.system { color: var(--color-blue); }
 .log-line.cmd { color: var(--color-gold); }
+.log-line.plugin { color: #c084fc; }
 
 /* ── INPUT CMD ── */
 .cmd-input-bar { display: flex; align-items: center; gap: 0; border-top: 1px solid var(--border-base); flex-shrink: 0; }

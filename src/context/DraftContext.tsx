@@ -98,7 +98,13 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [draftState, setDraftState] = useState<DraftState>(INITIAL_STATE);
   const [isConnected, setIsConnected] = useState(false);
   const [isHost, setIsHost] = useState(false);
-  const [isGameServerRunning, setIsGameServerRunning] = useState(false);
+  const [isGameServerRunning, setIsGameServerRunning] = useState(() => {
+    try {
+      return sessionStorage.getItem('dominokas_is_game_server_running') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [tunnelAddress, setTunnelAddress] = useState<string | null>(null);
   const [tunnelError, setTunnelError] = useState<string | null>(null);
@@ -113,10 +119,14 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [user, setUser] = useState<{ name: string, steam_id: string } | null>(null);
 
-  const emitLog = (text: string, type: 'info' | 'success' | 'warn' | 'error' | 'system' | 'cmd' = 'info') => {
+  const emitLog = (text: string, type: 'info' | 'success' | 'warn' | 'error' | 'system' | 'cmd' | 'plugin' = 'info') => {
     const now = new Date();
     const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-    const newEntry: LogEntry = { time, text, type };
+    let finalType = type;
+    if (text.includes('[Dominokas]') || text.includes('[HOST]') || text.includes('[Lobby]') || text.includes('[Draft]') || text.includes('[DominokasDraft]')) {
+      finalType = 'plugin';
+    }
+    const newEntry: LogEntry = { time, text, type: finalType };
     
     setServerLogs(prev => [...prev, newEntry]);
     window.dispatchEvent(new CustomEvent('server-log', { detail: newEntry }));
@@ -146,6 +156,19 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (u) setUser({ name: u.name, steam_id: u.steamId || u.steam_id });
     }).catch(() => { });
 
+    // Periodicamente sincroniza o estado do servidor de jogo se for o Host
+    const syncInterval = setInterval(() => {
+      if (isHost) {
+        invoke<boolean>('check_game_server_running')
+          .then(running => {
+            if (running !== isGameServerRunning) {
+              setIsGameServerRunning(running);
+            }
+          })
+          .catch(() => {});
+      }
+    }, 2000);
+
     // Listen para logs do Servidor Deadworks (Backend)
     let unlisten: (() => void) | undefined;
     
@@ -156,16 +179,22 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
 
     return () => {
+      clearInterval(syncInterval);
       if (unlisten) unlisten();
     };
-  }, []);
+  }, [isHost, isGameServerRunning]);
 
   // Persistir o draftState sempre que houver conexão ativa
   useEffect(() => {
-    if (draftState && isConnected) {
+    if (draftState) {
       sessionStorage.setItem('dominokas_draft_state', JSON.stringify(draftState));
     }
-  }, [draftState, isConnected]);
+  }, [draftState]);
+
+  // Persiste a flag do servidor de jogo ativo
+  useEffect(() => {
+    sessionStorage.setItem('dominokas_is_game_server_running', JSON.stringify(isGameServerRunning));
+  }, [isGameServerRunning]);
 
   // Loop de Heartbeat / Keep-Alive para evitar que o túnel e a conexão caiam por inatividade
   useEffect(() => {
@@ -820,6 +849,7 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     else if (msg.type === 'START_MATCH' && hostMode) {
       stateChanged = true;
       currentState.phase = 'match-in-progress';
+      setIsGameServerRunning(true);
       emitLog('PARTIDA INICIADA - REDIRECIONANDO JOGADORES...', 'success');
       invoke('save_match_state', { stateJson: JSON.stringify(currentState) }).catch(console.error);
     }
@@ -966,6 +996,7 @@ export const DraftProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     sessionStorage.removeItem('dominokas_role');
     sessionStorage.removeItem('dominokas_match_code');
     sessionStorage.removeItem('dominokas_draft_state');
+    sessionStorage.removeItem('dominokas_is_game_server_running');
   };
 
   useEffect(() => {
