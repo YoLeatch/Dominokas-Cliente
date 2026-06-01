@@ -1,11 +1,11 @@
 {
-  "version": "0.1.8",
-  "notes": "Dominokas Launcher v0.1.8 com persistência de slots no lobby, botão de início forçado, logs verbosos no servidor dedicado e ajustes visuais premium!",
+  "version": "0.1.13",
+  "notes": "Dominokas Launcher v0.1.13 com notificações interativas em jogo (say chat) informando conexões, desconexões e quantidade de jogadores faltantes no lobby!",
   "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI0MjM2NzExMDA1QzNGOUYKUldTZlAxd0FFV2NqSkMxZ0lZOWNYeVNMaE0zU0lIY2VoZUVnMGlpTXZGQXZOcEc2WEpTcXdaamgK",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSk9jcDA0ckZtRisxVHlCcU1xNUFBRk9jdXU4UDBXcGloSEkrUlpyUlc3SWtNTFJaaDV0TldEMzhKNWEvdGV6YlpzN0FiVWdMZkNxRTM2bjdEVEVGa3drPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NDIzMTAwCWZpbGU6RG9taW5va2FzXzAuMS44X3g2NC1zZXR1cC5leGUKSVQzVXMyUFZReFoxRi9xMTlNYWRiOW1GbFhCZXpwWisxRlpSLzhNTW9jS2MzSURhOUhFV2VINFk4Z3V5ZDF2TmwzSGhQNzFhRW5GeVhSNFl4azJwQnc9PQo=",
-      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.8_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTZlAxd0FFV2NqSkVHclU3TXFUTDI5QnAxQjM4SjhLbEV3N0o0bjRMQjZ6c3FsYzU3cjlyNXp3dkJnMDRLVEVPMlJqa29YTjlCcTZPSWQ5MXJ6OEo1RFZjRmVFZnhBa3dJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMjIyMTIxCWZpbGU6RG9taW5va2FzXzAuMS4xM194NjQtc2V0dXAuZXhlCmZYS0ZBTDJjVWpjZUkxZzgwWmROVkxtekZzN202UjRoRFB2R0g1Y0IyYllDWkEzbS92SFl1Z1VUc1ppTVE2QTlYdkUwN0g4R1pKK3ppWmdpeFRDZkNnPT0K",
+      "url": "https://github.com/YoLeatch/Dominokas-Cliente/releases/latest/download/Dominokas_0.1.13_x64-setup.exe"
     }
   }
 }

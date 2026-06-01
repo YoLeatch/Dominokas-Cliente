@@ -110,6 +110,36 @@ export const MatchInProgressPage: React.FC<Props> = ({ onNavigate }) => {
     }
   };
 
+  const handlePauseRec = async () => {
+    try {
+      await invoke('send_server_command', { command: 'pause_rec' });
+      alert('Comando de pausar gravação enviado ao servidor.');
+    } catch (err) {
+      console.error('Erro ao pausar gravação:', err);
+      alert('Erro ao pausar gravação: ' + err);
+    }
+  };
+
+  const handleResumeRec = async () => {
+    try {
+      await invoke('send_server_command', { command: 'resume_rec' });
+      alert('Comando de retomar gravação enviado ao servidor.');
+    } catch (err) {
+      console.error('Erro ao retomar gravação:', err);
+      alert('Erro ao retomar gravação: ' + err);
+    }
+  };
+
+  const handleStopRec = async () => {
+    try {
+      await invoke('send_server_command', { command: 'stop_rec' });
+      alert('Comando de parar gravação enviado ao servidor.');
+    } catch (err) {
+      console.error('Erro ao parar gravação:', err);
+      alert('Erro ao parar gravação: ' + err);
+    }
+  };
+
   const handleSendWorldMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatText.trim()) return;
@@ -233,6 +263,22 @@ export const MatchInProgressPage: React.FC<Props> = ({ onNavigate }) => {
                       </button>
                       <button className="host-btn-action" onClick={handleForceStart}>
                         FORÇAR INÍCIO
+                      </button>
+                    </div>
+
+                    <div className="host-section-title" style={{ fontSize: '10px', color: 'var(--text-dim)', letterSpacing: '1px', marginTop: '4px', textTransform: 'uppercase', fontFamily: "'Geist Mono', monospace" }}>
+                      🎥 Gravação de Replay (GOTV)
+                    </div>
+
+                    <div className="host-button-row" style={{ marginTop: '0px' }}>
+                      <button className="host-btn-action host-btn-rec-pause" onClick={handlePauseRec}>
+                        PAUSAR GRAVAÇÃO
+                      </button>
+                      <button className="host-btn-action host-btn-rec-resume" onClick={handleResumeRec}>
+                        RETOMAR GRAVAÇÃO
+                      </button>
+                      <button className="host-btn-action host-btn-rec-stop" onClick={handleStopRec}>
+                        PARAR GRAVAÇÃO
                       </button>
                     </div>
 

@@ -271,6 +271,19 @@ pub fn send_server_command(command: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+pub fn check_game_server_running() -> bool {
+    let mut proc_lock = SERVER_PROCESS.lock().unwrap();
+    if let Some(child) = proc_lock.as_mut() {
+        match child.try_wait() {
+            Ok(None) => true, // Processo ainda rodando
+            _ => false, // Processo terminou ou deu erro
+        }
+    } else {
+        false
+    }
+}
+
+#[tauri::command]
 pub fn stop_deadlock_server() -> Result<(), String> {
     let mut proc_lock = SERVER_PROCESS.lock().unwrap();
     if let Some(mut child) = proc_lock.take() {
@@ -336,6 +349,12 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
 
     let bat_path = bat_file.ok_or("Nenhum arquivo .bat encontrado em C:\\DeadlockSV")?;
 
+    // Deleta o console.log anterior para começar do zero
+    let console_log_path = PathBuf::from("C:\\DeadlockSV\\game\\citadel\\console.log");
+    if console_log_path.exists() {
+        let _ = fs::remove_file(&console_log_path);
+    }
+
     let mut child_cmd = Command::new("cmd");
     child_cmd.arg("/c").arg(&bat_path).current_dir(&deadlock_sv_dir);
     child_cmd.stdout(Stdio::piped()).stderr(Stdio::piped()).stdin(Stdio::piped());
@@ -367,34 +386,80 @@ pub fn start_deadlock_server(app: AppHandle) -> Result<(), String> {
         *ACTIVE_JOB.lock().unwrap() = Some(job);
     }
 
-    let app_clone1 = app.clone();
+    // Thread 1: Consome o stdout bruto em background e descarta para evitar que o buffer do SO encha e trave o processo
     thread::spawn(move || {
         let reader = BufReader::new(stdout);
-        for line in reader.lines() {
-            match line {
-                Ok(line_str) => {
-                    // Filtra spam recorrente do motor Source 2 quando rodando sem janela de console
-                    if !line_str.contains("CTextConsoleWin::GetLine") && !line_str.contains("!GetNumberOfConsoleInputEvents") {
-                        if app_clone1.emit("deadlock-server-log", line_str).is_err() {
-                            break;
-                        }
+        for _ in reader.lines() {
+            // Apenas descarta
+        }
+    });
+
+    // Thread 2: Lê o console.log em tempo real (tailing inteligente com seek para limpar EOF cache)
+    let app_clone1 = app.clone();
+    let log_path_clone = console_log_path.clone();
+    thread::spawn(move || {
+        use std::io::{Seek, BufRead};
+        // Espera o arquivo ser criado (limite de 15 segundos)
+        let mut attempts = 0;
+        while !log_path_clone.exists() && attempts < 150 {
+            thread::sleep(std::time::Duration::from_millis(100));
+            attempts += 1;
+        }
+
+        if let Ok(file) = fs::File::open(&log_path_clone) {
+            let mut reader = BufReader::new(file);
+            let mut line_buf = String::new();
+            loop {
+                // Verifica se o processo ainda está ativo
+                {
+                    let proc_lock = SERVER_PROCESS.lock().unwrap();
+                    if proc_lock.is_none() {
+                        break;
                     }
                 }
-                Err(_) => break,
+
+                match reader.read_line(&mut line_buf) {
+                    Ok(0) => {
+                        // EOF atingido: limpa o EOF cache dando seek na posição atual
+                        if let Ok(pos) = reader.stream_position() {
+                            let _ = reader.seek(std::io::SeekFrom::Start(pos));
+                        }
+                        thread::sleep(std::time::Duration::from_millis(50));
+                    }
+                    Ok(_) => {
+                        let trimmed = line_buf.trim_end();
+                        if !trimmed.is_empty() {
+                            let lower = trimmed.to_lowercase();
+                            if !lower.contains("ctextconsolewin::getline") && !lower.contains("getnumberofconsoleinputevents") {
+                                if app_clone1.emit("deadlock-server-log", trimmed.to_string()).is_err() {
+                                    break;
+                                }
+                            }
+                        }
+                        line_buf.clear();
+                    }
+                    Err(_) => {
+                        thread::sleep(std::time::Duration::from_millis(100));
+                    }
+                }
             }
         }
     });
 
+    // Thread 3: Lê o stderr e envia em tempo real
     let app_clone2 = app.clone();
     thread::spawn(move || {
         let reader = BufReader::new(stderr);
         for line in reader.lines() {
             match line {
                 Ok(line_str) => {
-                    // Filtra spam recorrente do motor Source 2 também no stderr
-                    if !line_str.contains("CTextConsoleWin::GetLine") && !line_str.contains("!GetNumberOfConsoleInputEvents") {
-                        if app_clone2.emit("deadlock-server-log", format!("ERROR: {}", line_str)).is_err() {
-                            break;
+                    let trimmed = line_str.trim();
+                    if !trimmed.is_empty() {
+                        let lower = trimmed.to_lowercase();
+                        if !lower.contains("ctextconsolewin::getline") && !lower.contains("getnumberofconsoleinputevents") {
+                            if app_clone2.emit("deadlock-server-log", format!("ERROR: {}", trimmed)).is_err() {
+                                break;
+                            }
                         }
                     }
                 }

@@ -4,7 +4,7 @@ export type HostRole = 'amber' | 'sapphire' | 'spectator';
 export interface LogEntry {
   time: string;
   text: string;
-  type: 'info' | 'success' | 'warn' | 'error' | 'system' | 'cmd';
+  type: 'info' | 'success' | 'warn' | 'error' | 'system' | 'cmd' | 'plugin';
 }
 
 export interface PlayerSlot {
